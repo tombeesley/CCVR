@@ -1,0 +1,429 @@
+---
+title: "CCVR05 Analysis"
+author: "Tom Beesley"
+date: "16/06/2021"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, include = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(broom)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+library(afex)
+library(BayesFactor)
+library(janitor)
+theme_set(theme_classic())
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # set wd to current file location
+
+data <- read_csv("data_tidy_CCVR05.csv", col_types = cols(gender = "c")) # read in the tidied data from the first analysis script.
+
+dataMain <- data %>% 
+  mutate(TT = if_else(set <= 4, "Repeated", "Random"), # recode "set" variable into 2 variables
+         targ_depth = if_else(set %in% c(1,3,5), "Near targets", "Far targets"),
+         epoch = ceiling(block/2)) %>% 
+  select(exp:gender, epoch, block:set, TT, targ_depth, everything())
+
+
+```
+
+The study consisted of three parts: a training, a contextual cueing paradigm, and an awareness test. 
+
+The main task was divided into two phases. In the first ‘learning’ phase, a 2 x 2 x 10 within-subject design was applied, with a factor of Target Location, which referred to a hemisphere on which the target was located (near vs. far), Configuration, which was either repeated across trials or newly generated for every trial (repeated vs. random), and Block (1-10).
+
+The second ‘manipulation’ phase consisted of a 2x3x8 within-subject design, with a factor of Target Location (near vs. far), Configuration (random vs. non-switched vs. switched) and Block (1-8). Three types of configurations were presented: 1) random, which were newly-generated for every trial, 2) non-switched, which were identical to the repeated configurations from the first phase, 3) switched, which resembled the repeated configurations from the first phase with that difference, that the near hemisphere now featured distractors that previously appeared on the far hemisphere, while the far hemisphere now presented distractors that in the first phase were shown on the near hemisphere. While all distractors changed their depth, the target remained on its original hemisphere.
+
+A single block contained 16 trials which in total gave 160 trials in the learning phase and 128 trials in the manipulation phase. Out of these 16 trials, eight configurations were generated randomly, whilst the other eight were repeated. In the second phase, four of these eight repeated configurations were subjected to a depth swap. 
+
+In the ‘manipulation’ phase for the four switched and four non-switched configurations, a balance in the presentation of the target in each quadrant as well as on each hemisphere was maintained on a between-subjects basis. In other words, all eight repeated configurations from the first phase were subjected to a depth swap in the second phase, however, every participant was exposed to a different pattern of target position across quadrants and depth spheres in the four switched and four non-switched configurations.
+
+
+```{r}
+# a table of the demongraphic information across participants
+data_demog <- dataMain %>% 
+  group_by(subj) %>% 
+  slice(1) %>% # take top row
+  ungroup() %>% 
+  select(subj,age,gender)
+
+demog_summary <- data_demog %>% 
+  summarise(n = n(),
+            mean_age = mean(age),
+            sd_age = sd(age),
+            males = sum(gender=="M"),
+            females = sum(gender=="F"),
+            non_binary = sum(!gender %in% c("M", "F")))
+
+basic_resp_stats <- dataMain %>%
+  group_by(subj) %>%
+  summarise(mean_RT = mean(RT < 9999),
+            perc_Timeouts = sum(dist_to_T==-1)/n(),
+            mean_Extra_Resp = mean(num_additional_Rs),
+            perc_Rs_Over1 = sum(num_additional_Rs>0)/n(),
+            perc_Rs_Over2 = sum(num_additional_Rs>1)/n()) %>% 
+  summarise_all(list(mean = mean, sd = sd)) %>% 
+  select(-contains("subj"))
+
+table_basic_resp_stats <- basic_resp_stats %>% 
+  pivot_longer(cols = everything(), names_to = "stat") %>% 
+  kable(digits = 2, col.names = c("","")) %>% 
+  kable_styling(latex_options = "hold_position", position = "left")
+
+# filter trials with more than 2 responses, timeouts,
+# and outlier RTs  
+data_NO <- dataMain %>% 
+  filter(num_additional_Rs<=1, dist_to_T>=0) %>% 
+  group_by(subj) %>% 
+  mutate(zRT = scale(RT)) %>% 
+  filter(between(zRT,-2.5,2.5)) %>% 
+  ungroup() 
+
+# what percentage of trials were removed for each participant?
+perc_removed <- data_NO %>%
+  group_by(subj) %>% 
+  summarise(perc = (1 - (n()/288))*100)
+
+# one participant had > 60% data removed. Remove from analysis.
+data_NO <- data_NO %>% 
+  filter(!subj %in% c(4))
+
+# compute normalised RT (norm_RT), for calculating w/s error bars (i.e., Cosin)
+data_NO <- data_NO %>% 
+  group_by(subj) %>% # within each experiment, and each subject
+  summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
+  mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
+  ungroup() %>% # ungroup the data, to allow for removal of variable
+  left_join(data_NO, by = "subj") %>% # join to the original data frame
+  mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
+  select(exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT) # arrange the variables
+
+# compute normalised RT (norm_RT), for calculating w/s error bars (i.e., Cosin)
+data_NO <- data_NO %>% 
+  group_by(subj) %>% # within each experiment, and each subject
+  summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
+  mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
+  ungroup() %>% # ungroup the data, to allow for removal of variable
+  left_join(data_NO, by = "subj") %>% # join to the original data frame
+  mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
+  select(exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT) # arrange the variables
+
+```
+
+There were `r length(data_demog$subj)` participants in the sample, of which `r sum(data_demog$gender == "F")` identified as female, and `r sum(data_demog$gender == "M")` as male. 
+
+Summary statistics for RTs and number of responses made:
+
+`r table_basic_resp_stats`
+
+Data processing: trials which led to timeouts, and trials that had more than one additional responses (i.e., up to 2 responses allowed) were removed. Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average this resulted in the loss of `r round(mean(perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create within-subject error bars in all plots. 
+
+
+
+```{r}
+# summarise the overall mean RT for each P 
+overall_RT_Means <- data_NO %>% 
+  group_by(subj) %>% 
+  summarise(meanRT = mean(RT)) %>% 
+  mutate(z_meanRT = scale(meanRT))
+
+outlier_meanRTs <- overall_RT_Means %>% 
+  filter(!between(z_meanRT, -2.5, 2.5)) %>% 
+  pull(subj) # P 7 seems to have unusually long mean RTs
+  
+# plot the boxplots of RT
+RT_boxplot <- overall_RT_Means %>% 
+  ggplot(aes(x = "meanRT", y = meanRT))+
+  geom_boxplot() +
+  geom_point() +
+  geom_text(aes(label = subj), hjust = 2, check_overlap = TRUE)
+
+# remove the one outlier participant from the sample [7]
+data_NO <- filter(data_NO,!subj %in% outlier_meanRTs)
+
+# separate into stage 1 and stage 2
+data_stg1 <- data_NO %>% 
+  filter(block<=10)
+
+# target switches were not coded in to the experiments (oops)
+# so, this works out which trials in phase 2 had switched targets, based on p_num, set, and quadrant
+data_stg2 <- data_NO %>% 
+  filter(block>10) %>% 
+  mutate(target_manip = case_when(
+    subj%%2==1 & TT =="Repeated" & targ_depth == "Near targets" & quadrant %in% c(1,3) ~ "switched",
+    subj%%2==1 & TT =="Repeated" & targ_depth == "Near targets" & quadrant %in% c(2,4) ~ "normal",
+    subj%%2==1 & TT =="Repeated" & targ_depth == "Far targets" & quadrant %in% c(1,3) ~ "normal",
+    subj%%2==1 & TT =="Repeated" & targ_depth == "Far targets" & quadrant %in% c(2,4) ~ "switched",
+    subj%%2==0 & TT =="Repeated" & targ_depth == "Near targets" & quadrant %in% c(1,3) ~ "normal",
+    subj%%2==0 & TT =="Repeated" & targ_depth == "Near targets" & quadrant %in% c(2,4) ~ "switched",
+    subj%%2==0 & TT =="Repeated" & targ_depth == "Far targets" & quadrant %in% c(1,3) ~ "switched",
+    subj%%2==0 & TT =="Repeated" & targ_depth == "Far targets" & quadrant %in% c(2,4) ~ "normal",
+    str_detect(TT, "Random") ~ "normal"
+    ))
+
+```
+
+```{r include = TRUE}
+RT_boxplot
+```
+
+Mean RTs for each participant were computed and the mean across the sample was `r round(mean(overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(overall_RT_Means$meanRT),0)`). `r length(outlier_meanRTs)` participants [`r outlier_meanRTs`] produced means that were more than 2.5 SDs above the mean of the sample, and were removed from further analysis. 
+
+```{r}
+
+data_stg1 <- data_stg1 %>%
+  mutate(TT = factor(TT, levels = c("Repeated", "Random")),
+         targ_depth = factor(targ_depth, levels = c("Near targets", "Far targets")))
+
+legendLBLs <- c("Repeated Far T", "Random Far T", "Repeated Near T", "Random Near T")
+
+rt_epoch_figure <- 
+  data_NO %>% 
+  group_by(TT, targ_depth, epoch) %>%
+  summarise(meanRT = mean(RT), SE = sd(norm_RT)/sqrt(n())) %>% 
+  ggplot(aes(x = epoch, y = meanRT, group = interaction(TT, targ_depth))) +
+  geom_line() +
+  geom_errorbar(aes(ymin = meanRT-SE, ymax = meanRT+SE), width = 0.2, size = .5) +
+  geom_point(aes(fill = interaction(TT, targ_depth), 
+                 shape = interaction(TT, targ_depth)), 
+             size = 4) +
+  theme(strip.text = element_text(size = 12, face = "bold"),
+        strip.text.x = element_text(hjust = 0.05),
+        strip.background = element_blank(),
+        panel.spacing.y = unit(2, "lines")) +
+  scale_y_continuous(limits = c(1700, 3100), 
+                     breaks = seq(1700,3100,200)) +
+  scale_x_continuous(breaks = seq(1,9,1),
+                     minor_breaks = seq(1,9,1)) +
+  scale_fill_manual(name  = "",
+                    labels = legendLBLs,
+                    values = c("black", "white", "black", "white")) +
+  scale_shape_manual(name = "",
+                     labels = legendLBLs,
+                     values = c(21,21,22,22))
+
+```
+
+
+```{r include = TRUE}
+rt_epoch_figure
+```
+
+The above figure shows RT across the experiment. Far targets have shorter RTs than near targets. CC looks to be present, especially in the far target condition.
+
+
+```{r include = TRUE}
+# perform ANOVA on the data across the two stages
+data_RT_ANOVA <- data_stg1 %>%  
+ group_by(subj, TT, targ_depth, epoch) %>% 
+  summarise(meanRT = mean(RT))
+
+data_RT_ANOVA %>%
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
+```
+
+ANOVA reveals a main effect of TT, with faster RTs to repeated compared to random configurations. Main effects of epoch and target depth. No other interaction effects. 
+
+```{r include = TRUE}
+# testing CC effect in Far target configurations
+data_RT_far <- data_stg1 %>% 
+  filter(targ_depth == "Far targets") %>% 
+  group_by(subj, TT) %>% 
+  summarise(meanRT = mean(RT))
+
+t.test(meanRT ~ TT, paired = TRUE, data = data_RT_far)
+```
+
+The effect is not present in the Far condition...
+
+```{r include = TRUE}
+# testing CC effect in Near target configurations
+data_RT_near <- data_stg1 %>% 
+  filter(targ_depth == "Near targets") %>% 
+  group_by(subj, TT) %>% 
+  summarise(meanRT = mean(RT))
+
+t.test(meanRT ~ TT, paired = TRUE, data = data_RT_near)
+
+# get CC effect by depth for each participant
+data_CC_subj <- 
+  data_NO %>% 
+  group_by(subj, TT, targ_depth) %>% 
+  summarise(meanRT = mean(RT)) %>% 
+  pivot_wider(names_from = TT, values_from = meanRT) %>% 
+  mutate(CC_effect = Random - Repeated)
+
+```
+
+...or the near condition.
+
+```{r}
+# STAGE 2 analysis
+
+# for this analysis it makes sense to collapse TT and target_manipulation into a single TT variable
+data_stg2 <- data_stg2 %>% 
+  mutate(TT = case_when(TT == "Repeated" ~ str_c(TT, ": ", target_manip),
+                            TT == "Random" ~ "Random"))
+
+data_stg2 <- data_stg2  %>%
+  mutate(TT = factor(TT, levels = c("Repeated: normal", "Repeated: switched", "Random")),
+         targ_depth = factor(targ_depth, levels = c("Near targets", "Far targets")))
+
+stg2_rt_data <- data_stg2 %>%
+  group_by(TT, targ_depth) %>%
+  summarise(meanRT = mean(RT), SE = sd(norm_RT)/sqrt(n()))
+
+stg2_rt_plot <- 
+  stg2_rt_data %>%  
+  ggplot(aes(x = targ_depth, y = meanRT, fill = TT)) +
+  geom_col(position = position_dodge2(), colour = "black") +
+  geom_errorbar(aes(ymin = meanRT, ymax = meanRT+SE), 
+                width = 0.1, size = .5,
+                position = position_dodge(width = .9)) +
+  coord_cartesian(ylim = c(1900, 2600)) +
+  scale_y_continuous(breaks = seq(1900,2600,100)) +
+  scale_fill_manual(name  = "",
+                    #labels = legendLBLs,
+                    values = c("black", "white", "grey"))
+    
+```
+
+Plot of the RTs for switched and normal repeated patterns, shows that the CC effect was numerically equivalent across these two trial types in Stage 2. Little evidence of CC effect in the near configurations.
+
+```{r include = TRUE}
+stg2_rt_plot
+```
+
+```{r echo=FALSE}
+data_RT_ANOVA_stg2 <- data_stg2 %>% 
+  group_by(subj, TT, targ_depth) %>% 
+  summarise(meanRT = mean(RT)) %>% 
+  mutate(subj = as.factor(subj))
+
+data_RT_ANOVA_stg2 %>%
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth)), data = .)
+
+# explore differences in far target condition
+t_far <- 
+  data_stg2 %>% 
+  filter(targ_depth == "Far targets") %>% 
+  group_by(subj, TT) %>% 
+  summarise(meanRT = mean(RT))
+
+pairwise.t.test(x = t_far$meanRT, g = t_far$TT, paired = TRUE)
+
+tBF <- data_RT_ANOVA_stg2 %>% 
+  filter(targ_depth == "Far targets",
+         TT != "Random") 
+
+ttestBF(formula = meanRT~TT, data = tBF) # some evidence for the null
+  
+```
+
+ANOVA confirms no effect of trial type in Stage 2. 
+
+```{r echo=FALSE}
+# CC effect correlation
+
+# what is the CC effect in Stage 1 for those configurations that will undergo a switch?
+stg1_switched <- 
+  data_stg1 %>% 
+  group_by(subj, targ_depth, TT, quadrant) %>% 
+  summarise(meanRT = mean(RT)) %>% 
+  pivot_wider(names_from = TT, values_from = meanRT) %>% 
+  clean_names() %>% 
+  mutate(cc_effect_stg1 = random - repeated)
+  
+# what is the CC effect in Stage 1 for those configurations that will undergo a switch?
+stg2_switched <- 
+  data_stg2 %>% 
+  group_by(subj, targ_depth, TT, quadrant) %>% 
+  summarise(meanRT = mean(RT)) %>% 
+  filter(TT != "Repeated: normal") %>% 
+  pivot_wider(names_from = TT, values_from = meanRT) %>%
+  drop_na() %>% 
+  clean_names() %>% 
+  mutate(cc_effect_stg2 = random - repeated_switched)
+
+stg1_stg2_switched <- 
+  left_join(stg2_switched, stg1_switched, by = c("subj", "targ_depth", "quadrant")) %>% 
+  select(subj, targ_depth,  quadrant, cc_effect_stg1, cc_effect_stg2)
+
+
+
+data_corr <- 
+  data_stg2 %>% 
+  group_by(subj, TT, targ_depth) %>% 
+  summarise(meanRT = mean(RT)) %>% 
+  pivot_wider(names_from = TT, values_from = meanRT) %>%
+  janitor::clean_names() %>% 
+  rowwise() %>% 
+  mutate(CC_normal = random - repeated_normal,
+         CC_switched = random - repeated_switched,
+         CC_avg = mean(c(CC_normal,CC_switched)))
+
+data_corr <- 
+  left_join(data_corr, data_CC_subj) %>% 
+  select(subj, targ_depth, CC_all = CC_effect, CC_normal, CC_switched, CC_avg)
+```
+
+However, exploratory correlational analysis shows that for those participants showing a CC effect, the extent to which they showed CC on normal trials in Stage 2, was inversely related to the extent to which they showed a CC effect on the switched trials. 
+
+```{r echo=FALSE, include = TRUE}
+data_corr %>%
+  filter(CC_all > 0) %>% 
+  ggplot(aes(x = CC_normal, y = CC_switched, colour = targ_depth)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm")
+
+data_corr %>% 
+  filter(CC_all > 0) %>% 
+  {cor.test(x = .$CC_normal, y = .$CC_switched)}
+
+
+stg1_stg2_switched %>%
+  filter(cc_effect_stg1 > 0) %>% 
+  ggplot(aes(x = cc_effect_stg1, y = cc_effect_stg2, colour = targ_depth)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm")
+
+stg1_stg2_switched %>% 
+  {cor.test(x = .$stg1_RT, y = .$stg2_RT)}
+
+```
+
+
+```{r echo=FALSE}
+
+# create new variables with experiment specific names
+CCVR05_demog_summary = demog_summary
+CCVR05_basic_resp_stats = basic_resp_stats
+CCVR05_perc_removed = perc_removed
+CCVR05_overall_RT_Means = overall_RT_Means
+CCVR05_RT_epoch_figure = rt_epoch_figure
+CCVR05_data_RT_ANOVA = data_RT_ANOVA
+CCVR05_stg2_rt_figure = stg2_rt_plot
+CCVR05_data_RT_ANOVA_stg2 = data_RT_ANOVA_stg2
+CCVR05_data_corr = data_corr
+
+#save these objects for manuscript
+save(CCVR05_demog_summary, 
+     CCVR05_basic_resp_stats,
+     CCVR05_perc_removed,
+     CCVR05_overall_RT_Means,
+     CCVR05_RT_epoch_figure,
+     CCVR05_data_RT_ANOVA,
+     CCVR05_stg2_rt_figure,
+     CCVR05_data_RT_ANOVA_stg2,
+     CCVR05_data_corr,
+     file = "../../CCVR_ms_1/CCVR05_export.Rdata")
+
+```
+

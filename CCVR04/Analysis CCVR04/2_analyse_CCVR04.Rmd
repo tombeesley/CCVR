@@ -1,0 +1,494 @@
+---
+title: "Report of CCVR04"
+author: "Tom Beesley"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+date_compiled_title = c("Output created on", date())
+```
+---
+date: `r date_compiled_title`
+---
+
+```{r, include = FALSE}
+library(tidyverse)
+library(broom)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+library(afex)
+library(BayesFactor)
+
+theme_set(theme_classic())
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # set wd to current file location
+
+data <- read_csv("data_tidy_CCVR04.csv") # read in the tidied data from the first analysis script.
+
+data_AW <- 
+  data %>% 
+  filter(phase == 2) %>% # separate out awareness data
+  mutate(TT = if_else(set %in% c(5,6), "Repeated", "Random"), # recode "set" variable into 2 variables
+         targ_depth = if_else(set %in% c(5,7), "Near targets", "Far targets")) %>% 
+  select(exp:block, set, TT, targ_depth, everything())
+
+dataMain <- 
+  data %>% 
+  filter(phase == 1) %>% # main phase of the task
+  mutate(TT = if_else(set %in% c(1,2), "Repeated", "Random"), # recode "set" variable into 2 variables
+         targ_depth = if_else(set %in% c(1,3), "Near targets", "Far targets"),
+         epoch = ceiling(block/2)) %>% 
+  select(exp:phase, epoch, block:set, TT, targ_depth, everything())
+
+```
+**Summary of the DESIGN of the experiment**  
+
+The main control of the pattern generation is found in "CreatePats.m" in the experiment code folder
+
+Set 1 - Near target repeated configurations (half pattern repeated, half random)  
+Set 2 - Far target repeated configurations (half pattern repeated, half random)  
+Set 3 - Near target random configurations  
+Set 4 - Far target random configurations  
+
+odd participants: proximal distractors were repeated, distal Ds randomised   
+even participants: distal distractors were repeated, proximal Ds randomised  
+
+Blocks 1:16, 21:36, 41:56, 61:62 - Repeated configurations (sets 1 and 2)  
+Blocks 17:20, 37:40, 57:60 - Random configurations (sets 3 and 4)  
+
+NB: the block numbers in the raw data files were mislabeled - blocks 21:36 were written out as 20:35. This had no consequence on the presentation of stimuli, but the block numbers are adjusted in 1_read_tidy_CCVR04.R  
+
+**Analysis report** 
+
+```{r, include = FALSE}
+# a table of the demographic information across participants
+data_demog <- 
+  dataMain %>% 
+  group_by(subj) %>% 
+  slice(1) %>% # take top row
+  ungroup() %>% 
+  select(subj,age,gender,condition)
+
+demog_summary <- 
+  data_demog %>% 
+  summarise(n = n(),
+            mean_age = mean(age),
+            sd_age = sd(age),
+            males = sum(gender=="M"),
+            females = sum(gender=="F"),
+            non_binary = sum(!gender %in% c("M", "F")))
+
+basic_resp_stats <- 
+  dataMain %>%
+  group_by(subj) %>%
+  summarise(mean_RT = mean(RT < 9999),
+            perc_Timeouts = sum(dist_to_T==-1)/n(),
+            mean_Extra_Resp = mean(num_additional_Rs),
+            perc_Rs_Over1 = sum(num_additional_Rs>0)/n(),
+            perc_Rs_Over2 = sum(num_additional_Rs>1)/n()) %>% 
+  summarise_all(list(mean = mean, sd = sd)) %>% 
+  select(-contains("subj"))
+
+table_basic_resp_stats <- 
+  basic_resp_stats %>% 
+  pivot_longer(cols = everything(), names_to = "stat") %>% 
+  kable(digits = 2, col.names = c("","")) %>% 
+  kable_styling(latex_options = "hold_position", position = "left")
+
+# filter trials with more than 2 responses, timeouts,
+# and outlier RTs  
+data_NO <- 
+  dataMain %>% 
+  filter(num_additional_Rs<=1, dist_to_T>=0) %>% 
+  group_by(subj) %>% 
+  mutate(zRT = scale(RT)) %>% 
+  filter(between(zRT,-2.5,2.5)) %>% 
+  ungroup() 
+
+# what percentage of trials were removed for each participant?
+perc_removed <- 
+  data_NO %>%
+  group_by(subj) %>% 
+  summarise(perc = (1 - (n()/496))*100)
+
+# compute normalised RT (norm_RT), for calculating w/s error bars 
+data_NO <- 
+  data_NO %>% 
+  group_by(subj) %>% # within each experiment, and each subject
+  summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
+  mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
+  ungroup() %>% # ungroup the data, to allow for removal of variable
+  left_join(data_NO, by = "subj") %>% # join to the original data frame
+  mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
+  select(exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT) # arrange the variables
+
+```
+
+There were `r length(data_demog$subj)` participants in the sample, of which `r sum(data_demog$gender == "F")` identified as female, and `r sum(data_demog$gender == "M")` as male. `r sum(data_demog$condition == "proximal_repeated")` were assigned to the "proximal repeated" condition, while `r sum(data_demog$condition == "distal_repeated")` were assigned to the "distal repeated" condition.
+
+Summary statistics for RTs and number of responses made:
+
+`r table_basic_resp_stats`
+
+Data processing: trials which led to timeouts, and trials that had more than one additional responses (i.e., up to 2 responses allowed) were removed. Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average this resulted in the loss of `r round(mean(perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create within-subject error bars in all plots. 
+
+```{r}
+# summarise the overall mean RT for each P 
+overall_RT_Means <- 
+  data_NO %>% 
+  group_by(subj) %>% 
+  summarise(meanRT = mean(RT)) %>% 
+  mutate(z_meanRT = scale(meanRT))
+
+outlier_meanRTs <- 
+  overall_RT_Means %>% 
+  filter(!between(z_meanRT, -2.5, 2.5)) %>% 
+  pull(subj) # Ps 27 and 60 seems to have unusually long mean RTs
+  
+# plot the boxplots of RT
+RT_boxplot <- 
+  overall_RT_Means %>% 
+  ggplot(aes(x = "meanRT", y = meanRT))+
+  geom_boxplot() +
+  geom_point() +
+  geom_text(aes(label = subj), hjust = 2, check_overlap = TRUE)
+
+# remove the two outlier participants from the sample
+data_NO <- filter(data_NO,!subj %in% outlier_meanRTs)
+
+```
+Mean RTs for each participant were computed and the mean across the sample was `r round(mean(overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(overall_RT_Means$meanRT),0)`). `r length(outlier_meanRTs)` participants [`r outlier_meanRTs`] produced means that were more than 2.5 SDs above the mean of the sample, and were removed from further analysis. 
+
+RTs were analysed by averaging the data across two consecutive blocks, producing 31 epochs of XX trials. As can be seen from the figure, RTs were slower for near targets compared to far targets. At three points in the experiment, random trials were introduced (epochs 9 and 10, 19 and 20, 29 and 30). These seemed to cause the expected increase in RT, which is evident particularly later on in the experiment.
+
+```{r warning=FALSE}
+# main analysis of RT
+
+# convert TT and targ_depth to factors and set level order
+data_NO <- 
+  data_NO %>%
+  mutate(TT = factor(TT, levels = c("Repeated", "Random")),
+         targ_depth = factor(targ_depth, levels = c("Near targets", "Far targets")))
+
+legendLBLs <- c("Repeated Near T", "Random Near T", "Repeated Far T", "Random Far T")
+
+# get data for the RT figure. 
+data_RT_avgs_figure <- 
+  data_NO %>%
+  group_by(condition, TT, targ_depth, epoch) %>% 
+  summarise(meanRT = mean(RT), SE = sd(norm_RT)/sqrt(n())) %>%
+  mutate(condition = recode(condition, 
+                            "distal_repeated" = "Distal condition",
+                            "proximal_repeated" = "Proximal condition")) %>% 
+  complete(TT, targ_depth, epoch) %>% # add NA values where missing - ensures breaks in lines for plot
+
+RT_avgs_figure <- 
+  data_RT_avgs_figure %>%
+  ggplot(aes(x = epoch, y = meanRT, group = interaction(TT, targ_depth))) +
+  geom_line() +
+  geom_errorbar(aes(ymin = meanRT-SE, ymax = meanRT+SE), width = 0.2, size = .5) +
+  geom_point(aes(fill = interaction(TT, targ_depth), 
+                 shape = interaction(TT, targ_depth)), 
+             size = 2) +
+  facet_wrap(~condition, dir = "v", scales = "free") +
+  theme(strip.text = element_text(size = 12, face = "bold"),
+        strip.text.x = element_text(hjust = 0.05),
+        strip.background = element_blank(),
+        panel.spacing.y = unit(2, "lines")) +
+  scale_y_continuous(limits = c(1400, 3000), 
+                     breaks = seq(1400,3000,200)) +
+  scale_x_continuous(breaks = seq(1,31,4),
+                     minor_breaks = seq(1,31,2)) +
+  scale_fill_manual(name  = "",
+                    labels = legendLBLs,
+                    values = c("black", "white", "black", "white")) +
+  scale_shape_manual(name = "",
+                     labels = legendLBLs,
+                     values = c(21,21,22,22)) +
+  labs(y = "Mean response time (ms)",
+       x = "Epoch (16 trials)")
+
+RT_avgs_figure # print the figure
+```
+
+The difference in RT between repeated and random patterns during "test phases" (Test 1 = epochs 8:11; Test 2 is epochs 18:21; Test 3 is epoch 28:31)
+
+```{r}
+
+# get the data from the "test" epochs
+data_NO_test <- 
+  data_NO %>%
+  mutate(test = case_when(epoch %in% 8:11 ~ 1,
+                          epoch %in% 18:21 ~ 2,
+                          epoch %in% 28:31 ~ 3)) %>% 
+  filter(test > 0)
+  
+# plot the test data by condition
+test_figure <- 
+  data_NO_test %>% 
+  mutate(condition = recode(condition, 
+                            "distal_repeated" = "Distal contingencies", 
+                            "proximal_repeated" = "Proximal contingencies")) %>%
+  group_by(condition, TT, targ_depth, test) %>%
+  summarise(meanRT = mean(RT), SE = sd(norm_RT)/sqrt(n())) %>% 
+  ggplot(aes(x = test, y = meanRT, fill = TT)) +
+  geom_col(position = position_dodge(),
+           colour = "black",
+           size = 1) +
+  geom_errorbar(aes(ymin = meanRT, ymax = meanRT+SE), 
+                width = 0.2, size = .5, position = position_dodge(width = 0.9)) +
+  scale_fill_manual(values = c("black", "white")) +
+  scale_y_continuous(breaks = seq(1400,2800,200)) +
+  coord_cartesian(ylim = c(1400,2800)) +
+  facet_wrap(vars(condition,targ_depth), 
+             nrow = 2, 
+             scales = "free",
+             labeller = labeller(.rows = label_value, .multi_line = TRUE)) + 
+  theme(strip.text = element_text(size = 10, face = "bold"),
+        strip.text.x = element_text(hjust = 0),
+        strip.background = element_blank(), 
+        panel.spacing.y = unit(2, "lines")) +
+  labs(x = "Test phase",
+       y = "Mean RT",
+       fill = "")
+
+test_figure #print figure
+
+```
+
+Submit data from the Test phases to ANOVA:
+
+```{r}
+
+data_NO_test$subj <- as.factor(data_NO_test$subj)
+
+#get data for the ANOVA on the test data
+data_RT_ANOVA <- 
+  data_NO_test %>% 
+  group_by(condition, subj, TT, targ_depth, test) %>% 
+  summarise(meanRT = mean(RT)) 
+
+# conduct ANOVA
+data_RT_ANOVA %>% 
+  aov_car(meanRT ~ Error(subj/(test*TT*targ_depth)) + condition, data = .)
+
+```
+
+The main effect of condition (proximal or distal distractors repeating) was not significant, and did not interact with any other factor. 
+
+The trial type by target depth interaction was not significant. This suggests that the learning was equivalent across depths. However, the ANOVA reveals an interesting test by trial type by target depth interaction effect, which is significant. This suggests that the pattern of learning effects observed across three tests was quite different in the two depths. Eye-balling the above figure suggests this is because there is a gradual emergence of a CC effect for near targets, but that the effect is present in Test 1 for far targets. Further, the CC effect seems larger in Test 3 for near targets than far targets. 
+
+To explore this interaction further we can remove the TT factor by subtracting RTs for repeated patterns from those for random patterns:
+
+```{r}
+
+test_diff <- 
+  data_NO_test %>%
+  group_by(subj, TT, targ_depth, test) %>%
+  summarise(meanRT = mean(RT)) %>% 
+  pivot_wider(names_from = TT, values_from = meanRT) %>% 
+  mutate(CC_RT = Random - Repeated) 
+
+test_diff_figure <- 
+  test_diff %>% 
+  group_by(targ_depth, test) %>% 
+  summarise(RT = mean(CC_RT), SE = sd(CC_RT)/sqrt(n())) %>% 
+  ggplot(aes(x = test, y = RT)) +
+  geom_errorbar(aes(ymin = RT-SE, ymax = RT+SE), 
+                width = 0.1, size = .5, colour = "black") +
+  geom_line(aes(group = targ_depth), size = 1) +
+  geom_point(aes(fill = targ_depth), 
+             size = 4, shape = 21, colour = "black", stroke = 1.5) +
+  scale_x_continuous(breaks = 1:3) +
+  scale_y_continuous(limits = c(-100, 300), breaks = seq(-100,300,50)) +
+  scale_fill_discrete(type = c("black", "white")) +
+  labs(x = "Test",
+       y = "Difference in RT (Random - Repeated)",
+       fill = "")
+
+test_diff_figure
+
+```
+
+We can look at t-tests on the three tests to see whether these differences were real.
+
+```{r}
+
+# t-test Test 1
+test_diff %>% 
+  filter(test == 1) %>% 
+  {t.test(.$CC_RT ~ .$targ_depth)}
+
+# t-test Test 2
+test_diff %>% 
+  filter(test == 2) %>% 
+  {t.test(.$CC_RT ~ .$targ_depth)}
+
+# t-test Test 3
+test_diff %>% 
+  filter(test == 3) %>% 
+  {t.test(.$CC_RT ~ .$targ_depth)}
+
+
+```
+
+It does look like there was a real difference in Test 1 and Test 3.
+
+## ego-centric analysis
+
+We have explored the allocentric contingencies in the design, but we can also look at whether the learning varied as a factor of whether the contingencies were close to the observer or not, which we term the egocentric factor.
+
+```{r}
+
+data_ego_test <- 
+  data_NO_test %>%
+  mutate(egocentric = case_when(condition == "proximal_repeated" & targ_depth == "Near targets"
+                                ~ "Egocentric - Near",
+                                condition == "proximal_repeated" & targ_depth == "Far targets"
+                                ~ "Egocentric - Far",
+                                condition == "distal_repeated" & targ_depth == "Near targets"
+                                ~ "Egocentric - Far",
+                                condition == "distal_repeated" & targ_depth == "Far targets"
+                                ~ "Egocentric - Near")) %>% 
+  mutate(egocentric = fct_relevel(egocentric, "Egocentric - Near", "Egocentric - Far"))
+
+test_ego_figure <- 
+  data_ego_test %>% 
+  group_by(egocentric, TT, test) %>%
+  summarise(meanRT = mean(RT), SE = sd(norm_RT)/sqrt(n())) %>% 
+  ggplot(aes(x = test, y = meanRT, fill = TT)) +
+  geom_col(position = position_dodge(),
+           colour = "black",
+           size = 1) +
+  geom_errorbar(aes(ymin = meanRT, ymax = meanRT+SE), 
+                width = 0.2, size = .5, position = position_dodge(width = 0.9)) +
+  scale_fill_manual(values = c("black", "white")) +
+  scale_y_continuous(breaks = seq(1800,2400,100)) +
+  coord_cartesian(ylim = c(1800,2400)) +
+  facet_wrap(vars(egocentric), 
+             nrow = 2, 
+             scales = "free",
+             labeller = labeller(.rows = label_value, .multi_line = FALSE)) + 
+  theme(strip.text = element_text(size = 10, face = "bold"),
+        strip.text.x = element_text(hjust = 0.05),
+        strip.background = element_blank(), 
+        panel.spacing.y = unit(2, "lines")) +
+  labs(x = "Test phase",
+       y = "Mean RT",
+       fill = "")
+
+test_ego_figure
+
+```
+
+A repeated-model ANOVA shows that the factor of egocentricity of the configuration (near to observer or far from the observer) has no bearing on response times or the TT effect):
+
+```{r}
+
+data_ego_test$subj <- as.factor(data_ego_test$subj)
+data_ego_test$egocentric <- as.factor(data_ego_test$egocentric)
+
+data_ego_RT_ANOVA <- 
+  data_ego_test %>% 
+  group_by(subj, egocentric, TT, test) %>% 
+  summarise(meanRT = mean(RT)) 
+
+data_ego_RT_ANOVA %>% 
+  aov_car(meanRT ~ Error(subj/(egocentric*TT*test)), data = .)
+
+
+
+```
+
+
+
+```{r}
+# remove the two outlier participants from the sample
+data_AW <- 
+  data_AW %>% 
+  filter(!subj %in% outlier_meanRTs)
+
+data_gen_descriptives <- 
+  data_AW %>% 
+  group_by(TT, targ_depth) %>% 
+  summarise(acc = mean(dist_to_T),
+            acc_sd = sd(dist_to_T))
+
+data_gen_descriptives %>% 
+  ggplot(aes(x = targ_depth, y = acc, fill = TT)) +
+  geom_col(position = position_dodge2(), colour = "black") +
+  scale_fill_manual(values = c("black","white"))
+
+data_gen_analysis <- 
+  data_AW %>% 
+  group_by(subj, TT, targ_depth) %>% 
+  summarise(acc = mean(dist_to_T))
+
+anova_awareness <- 
+  data_gen_analysis %>% 
+  aov_car(acc ~ Error(subj/(TT*targ_depth)), data = .)
+
+
+data_gen_analysis <- 
+  data_gen_analysis %>% 
+  mutate(subj = as.factor(subj),
+         TT = as.factor(TT),
+         targ_depth = as.factor(targ_depth))
+
+BFanova_awareness <- 
+  anovaBF(formula = acc ~ TT*targ_depth + subj,
+        whichRandom = "subj",
+        data = data_gen_analysis)
+
+
+```
+
+
+
+
+```{r}
+
+# create new variables with experiment specific names
+CCVR04_demog_summary = demog_summary
+CCVR04_basic_resp_stats = basic_resp_stats
+CCVR04_perc_removed = perc_removed
+CCVR04_overall_RT_Means = overall_RT_Means
+CCVR04_RT_avgs_figure = RT_avgs_figure
+CCVR04_test_figure = test_figure
+CCVR04_data_RT_ANOVA = data_RT_ANOVA
+CCVR04_data_RT_test_diff = test_diff
+CCVR04_RT_test_diff_figure = test_diff_figure
+CCVR04_data_ego_RT_ANOVA = data_ego_RT_ANOVA
+CCVR04_test_ego_figure = test_ego_figure
+CCVR04_data_awareness = data_gen_descriptives
+CCVR04_anova_awareness = anova_awareness
+CCVR04_BFanova_awareness = BFanova_awareness
+
+#save these objects for manuscript
+save(CCVR04_demog_summary, 
+     CCVR04_basic_resp_stats,
+     CCVR04_perc_removed,
+     CCVR04_overall_RT_Means,
+     CCVR04_RT_avgs_figure,
+     CCVR04_test_figure,
+     CCVR04_data_RT_ANOVA,
+     CCVR04_data_RT_test_diff,
+     CCVR04_RT_test_diff_figure,
+     CCVR04_data_ego_RT_ANOVA,
+     CCVR04_test_ego_figure,
+     CCVR04_data_awareness,
+     CCVR04_anova_awareness,
+     CCVR04_BFanova_awareness,
+     file = "../../CCVR_ms_1/CCVR04_export.Rdata")
+
+
+
+```
+

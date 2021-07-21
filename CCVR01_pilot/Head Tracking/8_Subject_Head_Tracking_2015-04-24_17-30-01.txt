@@ -1,0 +1,320 @@
+Camera Rotation Data For Block 1, Set 0:
+
+Camera Rotation Data For Block 1, Set 1:
+
+Camera Rotation Data For Block 1, Set 2:
+
+Camera Rotation Data For Block 1, Set 3:
+
+Camera Rotation Data For Block 1, Set 4:
+
+Camera Rotation Data For Block 1, Set 5:
+
+Camera Rotation Data For Block 1, Set 6:
+
+Camera Rotation Data For Block 1, Set 7:
+
+Camera Rotation Data For Block 1, Set 8:
+
+Camera Rotation Data For Block 1, Set 9:
+
+Camera Rotation Data For Block 1, Set 10:
+
+Camera Rotation Data For Block 1, Set 11:
+
+Camera Rotation Data For Block 1, Set 12:
+
+Camera Rotation Data For Block 1, Set 13:
+
+Camera Rotation Data For Block 1, Set 14:
+
+Camera Rotation Data For Block 1, Set 15:
+
+Camera Rotation Data For Block 2, Set 0:
+
+Camera Rotation Data For Block 2, Set 1:
+
+Camera Rotation Data For Block 2, Set 2:
+
+Camera Rotation Data For Block 2, Set 3:
+
+Camera Rotation Data For Block 2, Set 4:
+
+Camera Rotation Data For Block 2, Set 5:
+
+Camera Rotation Data For Block 2, Set 6:
+
+Camera Rotation Data For Block 2, Set 7:
+
+Camera Rotation Data For Block 2, Set 8:
+
+Camera Rotation Data For Block 2, Set 9:
+
+Camera Rotation Data For Block 2, Set 10:
+
+Camera Rotation Data For Block 2, Set 11:
+
+Camera Rotation Data For Block 2, Set 12:
+
+Camera Rotation Data For Block 2, Set 13:
+
+Camera Rotation Data For Block 2, Set 14:
+
+Camera Rotation Data For Block 2, Set 15:
+
+Camera Rotation Data For Block 3, Set 0:
+
+Camera Rotation Data For Block 3, Set 1:
+
+Camera Rotation Data For Block 3, Set 2:
+
+Camera Rotation Data For Block 3, Set 3:
+
+Camera Rotation Data For Block 3, Set 4:
+
+Camera Rotation Data For Block 3, Set 5:
+
+Camera Rotation Data For Block 3, Set 6:
+
+Camera Rotation Data For Block 3, Set 7:
+
+Camera Rotation Data For Block 3, Set 8:
+
+Camera Rotation Data For Block 3, Set 9:
+
+Camera Rotation Data For Block 3, Set 10:
+
+Camera Rotation Data For Block 3, Set 11:
+
+Camera Rotation Data For Block 3, Set 12:
+
+Camera Rotation Data For Block 3, Set 13:
+
+Camera Rotation Data For Block 3, Set 14:
+
+Camera Rotation Data For Block 3, Set 15:
+
+Camera Rotation Data For Block 4, Set 0:
+
+Camera Rotation Data For Block 4, Set 1:
+
+Camera Rotation Data For Block 4, Set 2:
+
+Camera Rotation Data For Block 4, Set 3:
+
+Camera Rotation Data For Block 4, Set 4:
+
+Camera Rotation Data For Block 4, Set 5:
+
+Camera Rotation Data For Block 4, Set 6:
+
+Camera Rotation Data For Block 4, Set 7:
+
+Camera Rotation Data For Block 4, Set 8:
+
+Camera Rotation Data For Block 4, Set 9:
+
+Camera Rotation Data For Block 4, Set 10:
+
+Camera Rotation Data For Block 4, Set 11:
+
+Camera Rotation Data For Block 4, Set 12:
+
+Camera Rotation Data For Block 4, Set 13:
+
+Camera Rotation Data For Block 4, Set 14:
+
+Camera Rotation Data For Block 4, Set 15:
+
+Camera Rotation Data For Block 5, Set 0:
+
+Camera Rotation Data For Block 5, Set 1:
+
+Camera Rotation Data For Block 5, Set 2:
+
+Camera Rotation Data For Block 5, Set 3:
+
+Camera Rotation Data For Block 5, Set 4:
+
+Camera Rotation Data For Block 5, Set 5:
+
+Camera Rotation Data For Block 5, Set 6:
+
+Camera Rotation Data For Block 5, Set 7:
+
+Camera Rotation Data For Block 5, Set 8:
+
+Camera Rotation Data For Block 5, Set 9:
+
+Camera Rotation Data For Block 5, Set 10:
+
+Camera Rotation Data For Block 5, Set 11:
+
+Camera Rotation Data For Block 5, Set 12:
+
+Camera Rotation Data For Block 5, Set 13:
+
+Camera Rotation Data For Block 5, Set 14:
+
+Camera Rotation Data For Block 5, Set 15:
+
+Camera Rotation Data For Block 6, Set 0:
+
+Camera Rotation Data For Block 6, Set 1:
+
+Camera Rotation Data For Block 6, Set 2:
+
+Camera Rotation Data For Block 6, Set 3:
+
+Camera Rotation Data For Block 6, Set 4:
+
+Camera Rotation Data For Block 6, Set 5:
+
+Camera Rotation Data For Block 6, Set 6:
+
+Camera Rotation Data For Block 6, Set 7:
+
+Camera Rotation Data For Block 6, Set 8:
+
+Camera Rotation Data For Block 6, Set 9:
+
+Camera Rotation Data For Block 6, Set 10:
+
+Camera Rotation Data For Block 6, Set 11:
+
+Camera Rotation Data For Block 6, Set 12:
+
+Camera Rotation Data For Block 6, Set 13:
+
+Camera Rotation Data For Block 6, Set 14:
+
+Camera Rotation Data For Block 6, Set 15:
+
+Camera Rotation Data For Block 7, Set 0:
+
+Camera Rotation Data For Block 7, Set 1:
+
+Camera Rotation Data For Block 7, Set 2:
+
+Camera Rotation Data For Block 7, Set 3:
+
+Camera Rotation Data For Block 7, Set 4:
+
+Camera Rotation Data For Block 7, Set 5:
+
+Camera Rotation Data For Block 7, Set 6:
+
+Camera Rotation Data For Block 7, Set 7:
+
+Camera Rotation Data For Block 7, Set 8:
+
+Camera Rotation Data For Block 7, Set 9:
+
+Camera Rotation Data For Block 7, Set 10:
+
+Camera Rotation Data For Block 7, Set 11:
+
+Camera Rotation Data For Block 7, Set 12:
+
+Camera Rotation Data For Block 7, Set 13:
+
+Camera Rotation Data For Block 7, Set 14:
+
+Camera Rotation Data For Block 7, Set 15:
+
+Camera Rotation Data For Block 8, Set 0:
+
+Camera Rotation Data For Block 8, Set 1:
+
+Camera Rotation Data For Block 8, Set 2:
+
+Camera Rotation Data For Block 8, Set 3:
+
+Camera Rotation Data For Block 8, Set 4:
+
+Camera Rotation Data For Block 8, Set 5:
+
+Camera Rotation Data For Block 8, Set 6:
+
+Camera Rotation Data For Block 8, Set 7:
+
+Camera Rotation Data For Block 8, Set 8:
+
+Camera Rotation Data For Block 8, Set 9:
+
+Camera Rotation Data For Block 8, Set 10:
+
+Camera Rotation Data For Block 8, Set 11:
+
+Camera Rotation Data For Block 8, Set 12:
+
+Camera Rotation Data For Block 8, Set 13:
+
+Camera Rotation Data For Block 8, Set 14:
+
+Camera Rotation Data For Block 8, Set 15:
+
+Camera Rotation Data For Block 9, Set 0:
+
+Camera Rotation Data For Block 9, Set 1:
+
+Camera Rotation Data For Block 9, Set 2:
+
+Camera Rotation Data For Block 9, Set 3:
+
+Camera Rotation Data For Block 9, Set 4:
+
+Camera Rotation Data For Block 9, Set 5:
+
+Camera Rotation Data For Block 9, Set 6:
+
+Camera Rotation Data For Block 9, Set 7:
+
+Camera Rotation Data For Block 9, Set 8:
+
+Camera Rotation Data For Block 9, Set 9:
+
+Camera Rotation Data For Block 9, Set 10:
+
+Camera Rotation Data For Block 9, Set 11:
+
+Camera Rotation Data For Block 9, Set 12:
+
+Camera Rotation Data For Block 9, Set 13:
+
+Camera Rotation Data For Block 9, Set 14:
+
+Camera Rotation Data For Block 9, Set 15:
+
+Camera Rotation Data For Block 10, Set 0:
+
+Camera Rotation Data For Block 10, Set 1:
+
+Camera Rotation Data For Block 10, Set 2:
+
+Camera Rotation Data For Block 10, Set 3:
+
+Camera Rotation Data For Block 10, Set 4:
+
+Camera Rotation Data For Block 10, Set 5:
+
+Camera Rotation Data For Block 10, Set 6:
+
+Camera Rotation Data For Block 10, Set 7:
+
+Camera Rotation Data For Block 10, Set 8:
+
+Camera Rotation Data For Block 10, Set 9:
+
+Camera Rotation Data For Block 10, Set 10:
+
+Camera Rotation Data For Block 10, Set 11:
+
+Camera Rotation Data For Block 10, Set 12:
+
+Camera Rotation Data For Block 10, Set 13:
+
+Camera Rotation Data For Block 10, Set 14:
+
+Camera Rotation Data For Block 10, Set 15:
+

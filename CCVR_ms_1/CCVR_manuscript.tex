@@ -5,14 +5,13 @@
 \documentclass[
   english,
   man,floatsintext]{apa7}
+\usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{amsmath}
 \usepackage{ifxetex,ifluatex}
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
-  \usepackage{amssymb}
 \else % if luatex or xetex
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
@@ -39,7 +38,7 @@
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
   pdftitle={Examing the role of depth information in contextual cuing using a virtual reality visual search task},
-  pdfauthor={Tom Beesley1, Ying Yun Tou2, \& Jack Walsh2},
+  pdfauthor={Tom Beesley1, Ying Yun Tou2, Jack Walsh2, \& Joe Bloggs2},
   pdflang={en-EN},
   pdfkeywords={Visual search, contextual cuing, depth, virtual reality},
   hidelinks,
@@ -86,9 +85,9 @@
 
 % Create new environments so endfloat can handle them
 % \newenvironment{ltable}
-%   {\begin{landscape}\begin{center}\begin{threeparttable}}
-%   {\end{threeparttable}\end{center}\end{landscape}}
-\newenvironment{lltable}{\begin{landscape}\begin{center}\begin{ThreePartTable}}{\end{ThreePartTable}\end{center}\end{landscape}}
+%   {\begin{landscape}\centering\begin{threeparttable}}
+%   {\end{threeparttable}\end{landscape}}
+\newenvironment{lltable}{\begin{landscape}\centering\begin{ThreePartTable}}{\end{ThreePartTable}\end{landscape}}
 
 % Enables adjusting longtable caption width to table width
 % Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
@@ -130,7 +129,10 @@
   \usepackage{polyglossia}
   \setmainlanguage[]{english}
 \else
-  \usepackage[shorthands=off,main=english]{babel}
+  \usepackage[main=english]{babel}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
 \fi
 \ifluatex
   \usepackage{selnolig}  % disable illegal ligatures
@@ -157,15 +159,15 @@
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \title{Examing the role of depth information in contextual cuing using a virtual reality visual search task}
-\author{Tom Beesley\textsuperscript{1}, Ying Yun Tou\textsuperscript{2}, \& Jack Walsh\textsuperscript{2}}
+\author{Tom Beesley\textsuperscript{1}, Ying Yun Tou\textsuperscript{2}, Jack Walsh\textsuperscript{2}, \& Joe Bloggs\textsuperscript{2}}
 \date{}
 
 
 \authornote{
 
 Tom Beesley, Department of Psychology, Lancaster University.
-Ying Yun Tou, School of Psychology, UNSW Sydney
-Jack Walsh, School of Psychology, UNSW Sydney
+Ying Yun Tou, School of Psychology, UNSW Sydney.
+Jack Walsh, School of Psychology, UNSW Sydney.
 
 Correspondence concerning this article should be addressed to Tom Beesley, Department of Psychology, Lancaster University, UK, LA1 4YD. E-mail: \href{mailto:t.beesley@lancaster.ac.uk}{\nolinkurl{t.beesley@lancaster.ac.uk}}
 
@@ -212,7 +214,7 @@ The current set of experiments further explore the role that depth plays in CC o
 \hypertarget{experiment-1a-and-1b}{%
 \section{Experiment 1a and 1b}\label{experiment-1a-and-1b}}
 
-The current experiment aimed to demonstrate CC in the virtual reality procedure, while also providing a simple manipulation of the target depth. Stimuli in the experiment were positioned at one of two distances from the observer (hereafter `near' and `far' depths). On one half of all trials, repeated configurations were presented, in which all distractors across the two depths were positioned in set locations. On the other half of all trials, all distractors were arranged randomly. Orthogonal to this factor, targets were positioned at either near or far locations from the observer..\footnote{At the time of writing this manuscript we became aware of an experiment with a very similar design published by Marek \& Pollmann (2020)}
+The current experiment aimed to demonstrate CC in the virtual reality procedure, while also providing a simple manipulation of the target depth. Stimuli in the experiment were positioned at one of two distances from the observer (hereafter `near' and `far' depths). On one half of all trials, repeated configurations were presented, in which all distractors across the two depths were positioned in set locations. On the other half of all trials, all distractors were arranged randomly. Orthogonal to this factor, targets were positioned at either near or far locations from the observer..\footnote{At the time of writing this manuscript we became aware of an experiment with a very similar design published by Marek and Pollmann (2020)}
 
 Vadillo et al. (2016) estimated an effect size of \emph{d\textsubscript{z}} = 1 in typical CC experiments. Given the novelty of the procedure, we took a cautionary approach by estimating a diminished effect size of \emph{d\textsubscript{z}} = 0.50. To achieve power of 0.90, with \(\alpha\) = 0.05, required a minimum sample of 44, which was achieved across Experiments 1a and 1b.
 
@@ -291,9 +293,9 @@ Experiment 1b employed some minor alterations to the materials and procedure. Si
 \hypertarget{results}{%
 \subsection{Results}\label{results}}
 
-Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of 11.80\% of trials. Normalised RT was computed in order to create within-subject error bars in all plots.
+Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of 12.60\% of trials. Normalised RT was computed in order to create within-subject error bars in all plots.
 
-Mean RTs for each participant were computed and the mean across the sample was 2373 ms (SD = 412). No participants were identified as outliers in terms of their mean RT.
+Mean RTs for each participant were computed and the mean across the sample was 2337 ms (SD = 401). No participants were identified as outliers in terms of their mean RT.
 
 An ANOVA revealed that the sub-experiment factor (1A/1B) was not significant (F \textless{} 1) and did not interact with any other factor. We therefore simplified the analysis to combine the data across the two sub-experiments.
 
@@ -310,14 +312,14 @@ Figure \ref{fig:Exp1-RT-figure} shows the RT data across the 6 epochs. RTs decre
 \caption{RT data for Experiment 1A and 1B.}\label{fig:Exp1-RT-figure}
 \end{figure}
 
-These data were subjected to a three-way repeated measures ANOVA. Where Mauchly's test of sphericity revealed violations, Greenhouse-Geisser corrections were made. There was a main effect of \emph{trial-type}, \emph{F}(1, 44) = 26.91, \emph{p} \textless{} .001, \(\eta^2_p\) = .38, with response times for repeated configurations (2317.8 ms, SD = 422.2) faster than those for random configurations (2449.7 ms, SD = 422.8). There was a main effect of \emph{target-depth}, \emph{F}(1, 44) = 72.48, \emph{p} \textless{} .001, \(\eta^2_p\) = .62, with response times for far targets (2197.3 ms, SD = 438) faster than those for near targets (2570.1 ms, SD = 440.2). There was also a main effect of \emph{epoch}, \emph{F}(3.14, 138.06) = 84.59, \emph{p} \textless{} .001, \(\eta^2_p\) = .66 with response times decreasing across the experiment. There was a significant \emph{trial-type by target-depth} interaction, \emph{F}(1, 44) = 4.77, \emph{p} = .034, \(\eta^2_p\) = .10 suggesting that the CC effect (RT to random configurations minus RT to repeated configurations) was larger for configurations with far targets (181.7 ms, SD = 248.6) compared to configurations with near targets (82 ms, SD = 207.8). The trial-type by epoch interaction was significant, \emph{F}(5, 220) = 4.89, \emph{p} \textless{} .001, \(\eta^2_p\) = .10, as was the \emph{target-depth by epoch} interaction, \emph{F}(3.60, 158.49) = 3.90, \emph{p} = .006, \(\eta^2_p\) = .08, suggesting that the RT decrease was more pronounced for configurations with distal targets. The three-way interaction was not significant, \emph{F}(5, 220) = 0.47, \emph{p} = .801, \(\eta^2_p\) = .01.
+These data were subjected to a three-way repeated measures ANOVA. Where Mauchly's test of sphericity revealed violations, Greenhouse-Geisser corrections were made. There was a main effect of \emph{trial-type}, \emph{F}(1, 44) = 20.08, \emph{p} \textless{} .001, \(\eta^2_p\) = .31, with response times for repeated configurations (2293.9 ms, SD = 416.7) faster than those for random configurations (2402.1 ms, SD = 406.6). There was a main effect of \emph{target-depth}, \emph{F}(1, 44) = 84.48, \emph{p} \textless{} .001, \(\eta^2_p\) = .66, with response times for far targets (2157.7 ms, SD = 423.2) faster than those for near targets (2538.2 ms, SD = 430.5). There was also a main effect of \emph{epoch}, \emph{F}(3.28, 144.15) = 79.60, \emph{p} \textless{} .001, \(\eta^2_p\) = .64 with response times decreasing across the experiment. There was a significant \emph{trial-type by target-depth} interaction, \emph{F}(1, 44) = 4.98, \emph{p} = .031, \(\eta^2_p\) = .10 suggesting that the CC effect (RT to random configurations minus RT to repeated configurations) was larger for configurations with far targets (156.8 ms, SD = 237.7) compared to configurations with near targets (59.4 ms, SD = 196.8). The trial-type by epoch interaction was significant, \emph{F}(5, 220) = 4.70, \emph{p} \textless{} .001, \(\eta^2_p\) = .10, as was the \emph{target-depth by epoch} interaction, \emph{F}(3.79, 166.70) = 4.99, \emph{p} \textless{} .001, \(\eta^2_p\) = .10, suggesting that the RT decrease was more pronounced for configurations with distal targets. The three-way interaction was not significant, \emph{F}(5, 220) = 0.30, \emph{p} = .910, \(\eta^2_p\) \textless{} .01.
 
-The overall CC effect (the main effect of \emph{trial-type} from the ANOVA) resulted in a Cohen's \emph{d\textsubscript{z}} = 0.77, with 82\% of participants showing a positive CC effect. The CC effect was present in both configurations with near targets, \emph{t}(44) = 2.65, \emph{p} = .011, \emph{d\textsubscript{z}} = 0.39, and those with far targets, \emph{t}(44) = 4.90, \emph{p} \textless{} .001, \emph{d\textsubscript{z}} = 0.73.
+The overall CC effect (the main effect of \emph{trial-type} from the ANOVA) resulted in a Cohen's \emph{d\textsubscript{z}} = 0.67, with 78\% of participants showing a positive CC effect. The CC effect was present in both configurations with near targets, \emph{t}(44) = 2.03, \emph{p} = .049, \emph{d\textsubscript{z}} = 0.30, and those with far targets, \emph{t}(44) = 4.43, \emph{p} \textless{} .001, \emph{d\textsubscript{z}} = 0.66.
 
 \hypertarget{discussion}{%
 \subsection{Discussion}\label{discussion}}
 
-Experiment 1 established a VR procedure for observing a CC effect, which resulted in a moderately large effect size of \emph{d\textsubscript{z}} = 0.77. This is somewhat weaker than the CC effect seen in some standard 2D implementations of the task. Interestingly the effect was modulated by the depth of the target: those configurations that were paired with a target on the far surface were learnt about more readily than those paired with targets on the near surface. This was coupled with an overall target-depth effect and it's possible that these two effects are related. When targets are positioned close to the observer, they are harder to detect, and this will lead to slower and possibly more variable search processes. In turn, a more random process of sampling the visual scene might lead to weaker distractor-target associations, resulting in weaker CC.
+Experiment 1 established a VR procedure for observing a CC effect, which resulted in a moderately large effect size of \emph{d\textsubscript{z}} = 0.67. This is somewhat weaker than the CC effect seen in some standard 2D implementations of the task. Interestingly the effect was modulated by the depth of the target: those configurations that were paired with a target on the far surface were learnt about more readily than those paired with targets on the near surface. This was coupled with an overall target-depth effect and it's possible that these two effects are related. When targets are positioned close to the observer, they are harder to detect, and this will lead to slower and possibly more variable search processes. In turn, a more random process of sampling the visual scene might lead to weaker distractor-target associations, resulting in weaker CC.
 
 Marek and Pollmann (2020) have previously shown evidence of a CC effect in a virtual reality procedure. Like in our task, participants experienced targets appearing on either a near surface or a far surface. In their task, and unlike in our results, participants took longer to respond to targets on the far surface compared to the near surface. This is likely to be because, in Marek and Pollmann's (2020) task, the targets on the far surface were placed outside of the immediate field of view, and hence head movements were needed to locate the targets on the far surface. In contrast, in Experiment 1 it was the targets on the near surface that could be placed outside of the initial field of view, whilst the targets on the far surface had a far greater chance of being contained within the initial field of view. Taken together, the two experiments (Experiment 1 and Marek and Pollmann (2020)) show, somewhat unsurprisingly, that the presence of the target within the initial field of view is critical to the speed of target detection.
 
@@ -424,7 +426,7 @@ These data were subjected to a three-way repeated-measures ANOVA with factors of
 \hypertarget{awareness-test}{%
 \subsubsection{Awareness test}\label{awareness-test}}
 
-For the awareness test, participants error scores on configurations with far targets was 4.5 ms (SD = 2.73) for repeated configurations, and 4.53 ms (SD = 2.73) for random configurations, while for near targets it was 3.14 ms (SD = 1.8) for repeated configurations, and 3.35 ms (SD = 1.77) for random configurations. These data were subjected to a two-way ANOVA with factors of \emph{configuration} and \emph{target position}, which revealed a main effect of target position \emph{F}(1, 65) = 153.15, \emph{p} \textless{} .001, \(\eta^2_p\) = .70,\footnote{The main effect of target position is due to the relative distances between the objects on the near surface being shorter than those on the far surface. Therefore any given decision made will be more likely to be closer to the actual target position for near surface targets} but no main effect of configuration, \emph{F}(1, 65) = 1.40, \emph{p} = .241, \(\eta^2_p\) = .02 and no interaction, \emph{F}(1, 65) = 0.56, \emph{p} = .455, \(\eta^2_p\) \textless{} .01. A Bayesian ANOVA revealed a Bayes Factor of 0.19 for the model containing only the configuration factor, suggesting reasonable support for the null model.
+For the awareness test, participants error scores on configurations with far targets was 4.5 ms (SD = 2.73) for repeated configurations, and 4.53 ms (SD = 2.73) for random configurations, while for near targets it was 3.14 ms (SD = 1.8) for repeated configurations, and 3.35 ms (SD = 1.77) for random configurations. These data were subjected to a two-way ANOVA with factors of \emph{configuration} and \emph{target position}, which revealed a main effect of target position \emph{F}(1, 65) = 153.15, \emph{p} \textless{} .001, \(\eta^2_p\) = .70,\footnote{The main effect of target position is due to the relative distances between the objects on the near surface being shorter than those on the far surface. Therefore any given decision made will be more likely to be closer to the actual target position for near surface targets} but no main effect of configuration, \emph{F}(1, 65) = 1.40, \emph{p} = .241, \(\eta^2_p\) = .02 and no interaction, \emph{F}(1, 65) = 0.56, \emph{p} = .455, \(\eta^2_p\) \textless{} .01. A Bayesian ANOVA revealed a Bayes Factor of 0.20 for the model containing only the configuration factor, suggesting reasonable support for the null model.
 
 \hypertarget{discussion-1}{%
 \subsection{Discussion}\label{discussion-1}}
@@ -438,11 +440,11 @@ An awareness test, in which participants had to indicate the location of an abse
 \hypertarget{general-discussion}{%
 \section{General Discussion}\label{general-discussion}}
 
-Two experiments sought to establish a CC effect within a three-dimensional virtual reality procedure. Experiment 1 established a moderate effect of CC (0.77) and we observed a CC effect for both configurations with targets near to the observer, and those with targets more distant from the observer. Experiment 2 sought to examine the learning of proximal and distal contingencies within the repeating configurations, by selectively pairing the target with repeated configurations on the same surface, or the alternative surface. While we found a robust CC effect overall (0.74), there was no effect of the position of the repeated distractors on the size of the CC effect. These data overwhelmingly suggest that where contingencies exist within the repeating configurations, learning will occur readily for those target-distractor contingencies.
+Two experiments sought to establish a CC effect within a three-dimensional virtual reality procedure. Experiment 1 established a moderate effect of CC (0.67) and we observed a CC effect for both configurations with targets near to the observer, and those with targets more distant from the observer. Experiment 2 sought to examine the learning of proximal and distal contingencies within the repeating configurations, by selectively pairing the target with repeated configurations on the same surface, or the alternative surface. While we found a robust CC effect overall (0.74), there was no effect of the position of the repeated distractors on the size of the CC effect. These data overwhelmingly suggest that where contingencies exist within the repeating configurations, learning will occur readily for those target-distractor contingencies.
 
 The placement of the target at different depths within three-dimensional space had a noticeable effect on the efficiency of visual search: having a target closer to the observer made search more difficult. Interestingly, there was some evidence in our data that the target placement also modulates the extent to which a CC effect develops. In Experiment 1 we found that the CC effect was stronger when repeated configurations were paired with targets on the far surface (those receiving faster responses) compared to the CC effect for repeated configurations paired with targets on the near surface (those receiving slower responses). However, Experiment 2 failed to fully replicate this effect. Instead, we found this advantage was observed only in the very first part of the experiment (Test 1), whereas later in the experiment this advantage had reversed (Test 3), with stronger CC effects observed for those configurations with targets on the near surface.
 
-There were several differences between the two studies that could explain this pattern of findings. It's notable that the two training procedures were not equivalent in the extent to which they exposed participants to repeated configurations of the distractors. In Experiment 2 we trained repeated configurations alone for most of the experiment, with random configurations restricted to discrete test blocks. This would likely have led to an enhancement of contingency learning, but would this would be offset to some degree by the more stochastic nature of the repeated configurations, with only half of the distractors in each repeated configuration predictive of the target in Experiment 2. In fact, the overall CC effect at the end of Experiment 2 (Test 3) was 170 ms, which was comparable to the effect seen in the final epoch of Experiment 1 of 185 ms. Inspection of the RT data from Experiment 2 (Figure \ref{fig:Exp2-test-figure}), however, shows that RTs may have reached a floor in the conditions with far targets in the latter stages of the experiment. In comparison, inspection of the RT data from Experiment 1 (Figure \ref{fig:Exp1-RT-figure}) reveals no such floor effect in the RTs. A tentative conclusion may be that when RTs were not approaching, or at, floor in Experiment 2, the CC effect for far targets outstripped that for near targets (Test 1), but that the CC effect for far targets was suppressed in the later stages of Experiment 2 when RTs reached floor in the far target condition. In a related unpublished experiment from our lab, participants were trained with complete configurations of repeated distractors with both far and near targets (in a similar manner to Experiment 1). Here we observed no significant difference between the CC effect in near and far targets, but it was numerically larger for those with far targets {[}\emph{add a link to OSF here}{]}. In addition to the data from our lab, Marek and Pollmann (2020) found no difference in the CC effect between configurations paired with near and far targets, with substantial support for the null hypothesis.
+There were several differences between the two studies that could explain this pattern of findings. It's notable that the two training procedures were not equivalent in the extent to which they exposed participants to repeated configurations of the distractors. In Experiment 2 we trained repeated configurations alone for most of the experiment, with random configurations restricted to discrete test blocks. This would likely have led to an enhancement of contingency learning, but would this would be offset to some degree by the more stochastic nature of the repeated configurations, with only half of the distractors in each repeated configuration predictive of the target in Experiment 2. In fact, the overall CC effect at the end of Experiment 2 (Test 3) was 170 ms, which was comparable to the effect seen in the final epoch of Experiment 1 of 169 ms. Inspection of the RT data from Experiment 2 (Figure \ref{fig:Exp2-test-figure}), however, shows that RTs may have reached a floor in the conditions with far targets in the latter stages of the experiment. In comparison, inspection of the RT data from Experiment 1 (Figure \ref{fig:Exp1-RT-figure}) reveals no such floor effect in the RTs. A tentative conclusion may be that when RTs were not approaching, or at, floor in Experiment 2, the CC effect for far targets outstripped that for near targets (Test 1), but that the CC effect for far targets was suppressed in the later stages of Experiment 2 when RTs reached floor in the far target condition. In a related unpublished experiment from our lab, participants were trained with complete configurations of repeated distractors with both far and near targets (in a similar manner to Experiment 1). Here we observed no significant difference between the CC effect in near and far targets, but it was numerically larger for those with far targets {[}\emph{add a link to OSF here}{]}. In addition to the data from our lab, Marek and Pollmann (2020) found no difference in the CC effect between configurations paired with near and far targets, with substantial support for the null hypothesis.
 
 The finding that depth relationships did not modulate the size of the CC effect in Experiment 2 is consistent with the results of Zang et al. (2017), where it was observed that after successful CC had been established, switching the distractors (and target) between front and back planes resulted in a maintenance of CC. Taken together, these data suggest that CC relies predominantly (and possibly exclusively) on the formation of associations within a two-dimensional representation of space. Our analysis of the ego-centricity of the contingencies illustrates this feature: distractors occurring near to the participant were learnt as readily as distractors far from the participant.
 
@@ -499,14 +501,8 @@ Smyth, A. C., \& Shanks, D. R. (2008). Awareness in contextual cuing with extend
 \leavevmode\hypertarget{ref-vadillo2016}{}%
 Vadillo, M. A., Konstantinidis, E., \& Shanks, D. R. (2016). Underpowered samples, false negatives, and unconscious learning. \emph{Psychonomic Bulletin \& Review}, \emph{23}(1), 87--102. \url{https://doi.org/10.3758/s13423-015-0892-6}
 
-\leavevmode\hypertarget{ref-vadillo2016}{}%
-Vadillo, M. A., Konstantinidis, E., \& Shanks, D. R. (2016). Underpowered samples, false negatives, and unconscious learning. \emph{Psychonomic Bulletin \& Review}, \emph{23}(1), 87--102. \url{https://doi.org/10.3758/s13423-015-0892-6}
-
 \leavevmode\hypertarget{ref-vadillo2021}{}%
 Vadillo, M. A., Malejka, S., Lee, D. Y. H., Dienes, Z., \& Shanks, D. R. (2021). Raising awareness about measurement error in research on unconscious mental processes. \emph{Psychonomic Bulletin \& Review}. \url{https://doi.org/10.3758/s13423-021-01923-y}
-
-\leavevmode\hypertarget{ref-zang2017}{}%
-Zang, X., Shi, Z., Müller, H. J., \& Conci, M. (2017). Contextual cueing in 3D visual search depends on representations in planar-, not depth-defined space. \emph{Journal of Vision}, \emph{17}(5), 17. \url{https://doi.org/10.1167/17.5.17}
 
 \leavevmode\hypertarget{ref-zang2017}{}%
 Zang, X., Shi, Z., Müller, H. J., \& Conci, M. (2017). Contextual cueing in 3D visual search depends on representations in planar-, not depth-defined space. \emph{Journal of Vision}, \emph{17}(5), 17. \url{https://doi.org/10.1167/17.5.17}

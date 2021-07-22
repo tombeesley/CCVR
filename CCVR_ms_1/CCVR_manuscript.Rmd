@@ -11,6 +11,8 @@ author:
     affiliation   : "2"
   - name          : "Jack Walsh" 
     affiliation   : "2"
+  - name          : "Joe Bloggs" 
+    affiliation   : "2"
 affiliation:
   - id            : "1"
     institution   : "Lancaster University, UK"
@@ -97,7 +99,7 @@ The current set of experiments further explore the role that depth plays in CC o
 
 The current experiment aimed to demonstrate CC in the virtual reality procedure, while also providing a simple manipulation of the target depth. Stimuli in the experiment were positioned at one of two distances from the observer (hereafter 'near' and 'far' depths). On one half of all trials, repeated configurations were presented, in which all distractors across the two depths were positioned in set locations. On the other half of all trials, all distractors were arranged randomly. Orthogonal to this factor, targets were positioned at either near or far locations from the observer. ^[At the time of writing this manuscript we became aware of an experiment with a very similar design published by @marek2020].
 
-```{r power-exp1, include=FALSE}
+```{r power-exp1}
 power_exp1 <- pwr.t.test(type = "paired", power = .90, sig = .05, d = .5)
 ```
 
@@ -112,7 +114,7 @@ load("CCVR03_export.Rdata")
 
 ### Participants.
 
-`r Words(demog_summary$n[1])` undergraduate psychology students (mean age = `r demog_summary$mean_age[1]`, SD = `r demog_summary$sd_age[1]`; `r demog_summary$males[1]` identified as male and `r demog_summary$females[1]` as female) from UNSW Sydney participated in the study in exchange for course credit (one participant failed to complete the task and their data were not analysed). Participants were required to have normal or corrected visual acuity. Participants wearing glasses (but not those wearing contact lenses) were excluded from this experiment due to constraints with the amount of space available in the virtual reality headset.
+`r Words(CCVR03_demog_summary$n[1])` undergraduate psychology students (mean age = `r CCVR03_demog_summary$mean_age[1]`, SD = `r CCVR03_demog_summary$sd_age[1]`; `r CCVR03_demog_summary$males[1]` identified as male and `r CCVR03_demog_summary$females[1]` as female) from UNSW Sydney participated in the study in exchange for course credit (one participant failed to complete the task and their data were not analysed). Participants were required to have normal or corrected visual acuity. Participants wearing glasses (but not those wearing contact lenses) were excluded from this experiment due to constraints with the amount of space available in the virtual reality headset.
 
 ### Materials.
 
@@ -156,7 +158,7 @@ Reaction times were measured in milliseconds (ms) from the beginning of a trial 
 
 ### Participants.
 
-`r Words(demog_summary$n[2])` participants (mean age = `r demog_summary$mean_age[2]`, SD = `r demog_summary$sd_age[2]`; `r demog_summary$males[2]` participants identified as male and `r demog_summary$females[2]` as female) took part in the study in exchange for AUS\$15. All other aspects of participant recruitment, exclusions and requirements were identical to Experiment 1a.
+`r Words(CCVR03_demog_summary$n[2])` participants (mean age = `r CCVR03_demog_summary$mean_age[2]`, SD = `r CCVR03_demog_summary$sd_age[2]`; `r CCVR03_demog_summary$males[2]` participants identified as male and `r CCVR03_demog_summary$females[2]` as female) took part in the study in exchange for AUS\$15. All other aspects of participant recruitment, exclusions and requirements were identical to Experiment 1a.
 
 ### Materials, Design, and Procedure.
 
@@ -164,9 +166,9 @@ Experiment 1b employed some minor alterations to the materials and procedure. Si
 
 ## Results
 
-Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of `r round(mean(perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create within-subject error bars in all plots.
+Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of `r round(mean(CCVR03_perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create within-subject error bars in all plots.
 
-Mean RTs for each participant were computed and the mean across the sample was `r round(mean(overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of their mean RT.
+Mean RTs for each participant were computed and the mean across the sample was `r round(mean(CCVR03_overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(CCVR03_overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of their mean RT.
 
 An ANOVA revealed that the sub-experiment factor (1A/1B) was not significant (F \< 1) and did not interact with any other factor. We therefore simplified the analysis to combine the data across the two sub-experiments.
 
@@ -175,6 +177,7 @@ Figure \@ref(fig:Exp1-RT-figure) shows the RT data across the 6 epochs. RTs decr
 (ref:Exp1-RT-figure) RT data for Experiment 1A and 1B.
 
 ```{r Exp1-RT-figure, fig.align="center", fig.cap="(ref:Exp1-RT-figure)", out.width="100%"}
+# plots the main RT figure from CCVR03
 CCVR03_RT_avgs_figure +
   labs(y = "Mean response time (ms)",
        x = "Epoch (80 trials)") +
@@ -191,25 +194,32 @@ CCVR03_RT_avgs_figure +
 ```
 
 ```{r Exp1-stats}
-
-exp1_anova <- data_RT_ANOVA_CCVR03 %>% 
+# ANOVA of RT from CCVR03, by trial type, target depth and epoch
+exp1_anova <- 
+  CCVR03_data_RT_ANOVA %>% 
   aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
 
-sme_TT <- data_RT_ANOVA_CCVR03 %>% 
+# simple main effect of trial type
+sme_TT <- 
+  CCVR03_data_RT_ANOVA %>% 
   group_by(subj, TT) %>% 
   summarise(subjRT = mean(meanRT)) %>% 
   group_by(TT) %>% 
   summarise(RT = round(mean(subjRT),1),
             SD = round(sd(subjRT),1))
 
-sme_targ_depth <- data_RT_ANOVA_CCVR03 %>% 
+# simple main effect of target depth
+sme_targ_depth <- 
+  CCVR03_data_RT_ANOVA %>% 
   group_by(subj, targ_depth) %>% 
   summarise(subjRT = mean(meanRT)) %>% 
   group_by(targ_depth) %>% 
   summarise(RT = round(mean(subjRT),1),
             SD = round(sd(subjRT),1))
 
-sme_TT_td <- data_RT_ANOVA_CCVR03 %>% 
+# simple main effect of trial type at each target depth
+sme_TT_td <- 
+  CCVR03_data_RT_ANOVA %>% 
   group_by(subj, TT, targ_depth) %>% 
   summarise(subjRT = mean(meanRT)) %>% 
   pivot_wider(names_from = TT, values_from = subjRT) %>% 
@@ -219,23 +229,28 @@ sme_TT_td <- data_RT_ANOVA_CCVR03 %>%
             SD = round(sd(CC_effect),1))
 
 # CC effect overall 
-dataCC <- data_RT_ANOVA_CCVR03 %>% 
+dataCC <- 
+  CCVR03_data_RT_ANOVA %>% 
   group_by(subj, TT) %>% 
   summarise(RT = mean(meanRT)) %>% 
   mutate(TT = fct_relevel(TT, "random", "repeated")) # makes t and d both positive values
 
+# t and d calculations for CC effect
 t_exp1_CC_all <- t.test(RT ~ TT, data = dataCC, paired = TRUE)
 t_exp1_CC_all <- str_replace(apa(t_exp1_CC_all), "d", "d~z~") # convert to apa and d to dz
 d_exp1_CC_all <- cohensD(data = dataCC, formula = RT ~ TT, method = "paired")
 
-prop_positive_CC <- dataCC %>%
+# calculate proportion showing the CC effect
+prop_positive_CC <- 
+  dataCC %>%
   ungroup() %>% 
   pivot_wider(names_from = TT, values_from = RT) %>% 
   transmute(subj, CCeffect = random - repeated) %>% # proportion showing CC
   summarise(nPos = 100*mean(CCeffect>0))
 
 # CC effect near targets 
-dataCC <- data_RT_ANOVA_CCVR03 %>% 
+dataCC <- 
+  CCVR03_data_RT_ANOVA %>% 
   filter(targ_depth == "near") %>% 
   group_by(subj, TT) %>% 
   summarise(RT = mean(meanRT)) %>% 
@@ -246,7 +261,8 @@ t_exp1_CC_near <- str_replace(apa(t_exp1_CC_near), "d", "d~z~") # convert to apa
 d_exp1_CC_near <- cohensD(data = dataCC, formula = RT ~ TT, method = "paired")
 
 # CC effect far targets 
-dataCC <- data_RT_ANOVA_CCVR03 %>% 
+dataCC <- 
+  CCVR03_data_RT_ANOVA %>% 
   filter(targ_depth == "far") %>% 
   group_by(subj, TT) %>% 
   summarise(RT = mean(meanRT)) %>% 
@@ -254,14 +270,12 @@ dataCC <- data_RT_ANOVA_CCVR03 %>%
 
 t_exp1_CC_far <- t.test(RT ~ TT, data = dataCC, paired = TRUE)
 t_exp1_CC_far <- str_replace(apa(t_exp1_CC_far), "d", "d~z~") # convert to apa and d to dz
-
 d_exp1_CC_far <- cohensD(data = dataCC, formula = RT ~ TT, method = "paired")
 
 
-# how big was CC effect (ms) at end of experiment?
-
+# how big was CC effect (ms) at the end of the experiment?
 CC_effect <- 
-  data_RT_ANOVA_CCVR03 %>% 
+  CCVR03_data_RT_ANOVA %>% 
   filter(epoch == 6) %>% 
   group_by(subj, TT) %>% 
   summarise(subjRT = mean(meanRT)) %>% 
@@ -328,6 +342,7 @@ Figure \@ref(fig:Exp2-RT-figure) shows the RT data across the 31 epochs. RTs dec
 (ref:Exp2-RT-figure) RT data for Experiment 2.
 
 ```{r Exp2-RT-figure, fig.align="center", fig.cap="(ref:Exp2-RT-figure)", fig.dim=c(8,8)}
+# main RT figure from CCVR04
 CCVR04_RT_avgs_figure +
   theme(text=element_text(size = 12, family="Calibri"),
         axis.title.x = element_text(size = 14, 
@@ -347,40 +362,48 @@ Learning effects under each condition were calculated by comparing RTs for those
 (ref:Exp2-test-figure) RT data from the "test blocks" of Experiment 2.
 
 ```{r Exp2-test-figure, fig.align="center", fig.cap="(ref:Exp2-test-figure)", out.width="100%"}
-
+# test data figure from CCVR04
 CCVR04_test_figure
-
 
 ```
 
 ```{r Exp2 stats}
-
+# convert variables to factors
 CCVR04_data_RT_ANOVA$condition <- as.factor(CCVR04_data_RT_ANOVA$condition)
 CCVR04_data_RT_ANOVA$test <- as.factor(CCVR04_data_RT_ANOVA$test)
 
-exp2_anova <- CCVR04_data_RT_ANOVA %>% 
+# conduct ANOVA on the test data
+exp2_anova <- 
+  CCVR04_data_RT_ANOVA %>% 
   aov_car(meanRT ~ condition + Error(subj/(TT*targ_depth*test)), data = .)
 
+# bayesian ANOVA on the test data
 exp_2_anova_BF <- 
   anovaBF(meanRT ~ condition*TT + subj, 
         data = CCVR04_data_RT_ANOVA, 
         whichRandom = "subj")
 
-sme_TT <- CCVR04_data_RT_ANOVA %>% 
+# simple main effect of trial type
+sme_TT <- 
+  CCVR04_data_RT_ANOVA %>% 
   group_by(subj, TT) %>% 
   summarise(subjRT = mean(meanRT)) %>% 
   group_by(TT) %>% 
   summarise(RT = round(mean(subjRT),1),
             SD = round(sd(subjRT),1))
 
-sme_targ_depth <- CCVR04_data_RT_ANOVA %>% 
+# simple main effect of target depth
+sme_targ_depth <- 
+  CCVR04_data_RT_ANOVA %>% 
   group_by(subj, targ_depth) %>% 
   summarise(subjRT = mean(meanRT)) %>% 
   group_by(targ_depth) %>% 
   summarise(RT = round(mean(subjRT),1),
             SD = round(sd(subjRT),1))
 
-sme_test <- CCVR04_data_RT_ANOVA %>% 
+# simple main effect of test
+sme_test <- 
+  CCVR04_data_RT_ANOVA %>% 
   group_by(subj, test) %>% 
   summarise(subjRT = mean(meanRT)) %>% 
   group_by(test) %>% 
@@ -442,6 +465,7 @@ There was a significant interaction between configuration type and test, `r apa(
 
 ```{r Exp2-CC-figure, fig.align="center", fig.cap="(ref:Exp2-CC-figure)", out.width="100%"}
 
+# figure showing the CC effect across tests, by target position
 CCVR04_RT_test_diff_figure
 
 ```
@@ -454,21 +478,25 @@ So far our analysis has focused on the *allocentric* nature of the contingencies
 
 ```{r Exp2-ego-figure, fig.align="center", fig.cap="(ref:Exp2-ego-figure)", out.width="100%"}
 
+# figure showing RT as a function of egocentricity
 CCVR04_test_ego_figure
 
 ```
 
 ```{r}
 
+# ANOVA on the RT data with factors of egocentricity, trial type, and test
 exp2_ego_anova <- 
   CCVR04_data_ego_RT_ANOVA %>% 
   aov_car(meanRT ~ Error(subj/(egocentric*TT*test)), data = .)
 
+# ANOVA focused on trials with near targets
 exp2_ego_near_anova <- 
   CCVR04_data_ego_RT_ANOVA %>% 
   filter(egocentric == "Egocentric - Near") %>% 
   aov_car(meanRT ~ Error(subj/(TT*test)), data = .)
 
+# ANOVA focused on trials with far targets
 exp2_ego_far_anova <- 
   CCVR04_data_ego_RT_ANOVA %>% 
   filter(egocentric == "Egocentric - Far") %>% 
@@ -519,13 +547,6 @@ In this sense, the associative framework put forward by @brady2007 [see also @be
 Two caveats should be made to this conclusion. Firstly, @kawahara2003 showed that reversing the depth of two surfaces within previously learnt configurations can produce a disruption in CC, but in the case of their experiment [in comparison to @zang2017], the target position was maintained across these reversals, and it is therefore likely that the two-dimensional relationships between distractors and targets were also disrupted. As such, this attenuation of the CC effect would be expected according to models encoding only two-dimensional representations of the configurations. The second caveat is that we observed a strong effect of target location on the efficiency of visual search, with longer search times on targets closer to the observer compared to targets appearing further away. Prima facie, this result would seem to necessitate the encoding of depth within the model to account such effects on visual search. In addition, we have noted that this target depth effect appears to modulate the CC effect, though these results are less clear. It is possible, however, that harder visual searches simply result in weaker CC, irrespective of any manipulation of depth. 
 
 Our tasks demonstrate the great potential virtual reality procedures have for expanding the range of manipulations that can be achieved in CC (see also  @marek2020), and therefore advancing our understanding of the cognitive and perceptual processes responsible for learning in visual search. Future work will provide further tests of whether the ubiquitous CC effects across depth that we have observed withstand manipulations of distractor positions, providing further data to understand the discrepancy in findings between the current data, those of @zang2017 and those of @kawahara2003. This in turn will provide key data to revise our models of CC. 
-
-
-
-
-
-
-
 
 \newpage
 

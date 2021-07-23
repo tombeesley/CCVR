@@ -8,7 +8,7 @@ CCVR03 built on this pilot work with a basic design to establish contextual cuin
 
 CCVR04 manipulated the position of repeating distractors, either on the same surface as the target, or the alternative surface
 
-CCVR05 manipulated the depth of already learnt distractor patterns in a final phase, in an attempt to ascertain further whether depth plays a role in the performance of CC. This experiment lacked sufficient power and is not reported. It is being written up for psyarxiv.
+CCVR05 manipulated the depth of already learnt distractor patterns in a final phase, in an attempt to ascertain further whether depth plays a role in the performance of CC. This experiment lacked sufficient power and is not reported. Unpublished dissertation by Magda Lapinska (Lancaster University) is available here. It is being written up for psyarxiv.
 
 CCVR_ms_1 is the manuscript which presents the data from CCVR03 and CCVR04, currently under review at JEP:HPP
 

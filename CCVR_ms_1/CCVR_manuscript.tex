@@ -38,7 +38,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Examing the role of depth information in contextual cuing using a virtual reality visual search task},
+  pdftitle={Examining the role of depth information in contextual cuing using a virtual reality visual search task},
   pdfauthor={Tom Beesley1, Ying Yun Tou2, \& Jack Walsh2},
   pdflang={en-EN},
   pdfkeywords={Visual search, contextual cuing, depth, virtual reality},
@@ -90,9 +90,9 @@
 
 % Create new environments so endfloat can handle them
 % \newenvironment{ltable}
-%   {\begin{landscape}\centering\begin{threeparttable}}
-%   {\end{threeparttable}\end{landscape}}
-\newenvironment{lltable}{\begin{landscape}\centering\begin{ThreePartTable}}{\end{ThreePartTable}\end{landscape}}
+%   {\begin{landscape}\begin{center}\begin{threeparttable}}
+%   {\end{threeparttable}\end{center}\end{landscape}}
+\newenvironment{lltable}{\begin{landscape}\begin{center}\begin{ThreePartTable}}{\end{ThreePartTable}\end{center}\end{landscape}}
 
 % Enables adjusting longtable caption width to table width
 % Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
@@ -117,7 +117,7 @@
   {}{\typeout{Failed to patch title.}}
 \makeatother
 \shorttitle{Depth, VR and contextual cuing}
-\keywords{Visual search, contextual cuing, depth, virtual reality\newline\indent Word count: 6805}
+\keywords{Visual search, contextual cuing, depth, virtual reality\newline\indent Word count: 6834}
 \DeclareDelayedFloatFlavor{ThreePartTable}{table}
 \DeclareDelayedFloatFlavor{lltable}{table}
 \DeclareDelayedFloatFlavor*{longtable}{table}
@@ -164,15 +164,14 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-\title{Examing the role of depth information in contextual cuing using a virtual reality visual search task}
+\title{Examining the role of depth information in contextual cuing using a virtual reality visual search task}
 \author{Tom Beesley\textsuperscript{1}, Ying Yun Tou\textsuperscript{2}, \& Jack Walsh\textsuperscript{2}}
 \date{}
 
 
 \authornote{
 
-The data, analysis scripts, experimental materials, and the manuscript code, are available at \href{https://github.com/tombeesley/CCVR}{github.com/tombeesley/CCVR}. The analyses reported in this manuscript are computationally reproducible using R.
-
+The data, analysis scripts, experimental materials, and the manuscript source files, are available at \href{https://github.com/tombeesley/CCVR}{github.com/tombeesley/CCVR}.
 Tom Beesley, Department of Psychology, Lancaster University.
 Ying Yun Tou, School of Psychology, UNSW Sydney.
 Jack Walsh, School of Psychology, UNSW Sydney.
@@ -185,6 +184,8 @@ Correspondence concerning this article should be addressed to Tom Beesley, Depar
 
 \abstract{
 Two experiments examined the role that depth plays in the formation of associations during contextual cuing of visual search. Current associative models make predictions about the spatial constraints placed on learning within two-dimensional procedures, but there exists very little evidence of how these predictions translate to three-dimensional space. A virtual reality procedure was used to project the stimuli in three-dimensions. Experiment 1 established a contextual cuing effect using this procedure, while Experiment 2 examined whether the relative distance between repeated distractors and the target, or the position of the distractors relative to the observer modulated contextual cuing. It was found that the contextual cuing effect was consistent across these different conditions. As a result, there was no evidence to suggest that depth information forms a significant part of the representations that form during contextual cuing. These data are therefore broadly consistent with the mechanisms of current associative models of contextual cuing.
+
+Public significance statement: This study provides a test of the way in which visual scenes are processed and learnt about across three-dimensional space. Current models of this behaviour only consider learning in two-dimensional space. The current work therefore provides important insights into how depth information contributes to the memory representations of familiar scenes.
 }
 
 
@@ -219,6 +220,11 @@ Zang et al. (2017) have suggested that Kawahara's (2003) method of maintaining t
 
 The current set of experiments further explore the role that depth plays in CC of visual search. The experiments use a virtual reality device to project the stimuli in stereoscopic 3D. This allows stimuli to be positioned across a wide field of view, with head movements required to process the visual display in full during the search process. Experiments 1a and 1b provide a simple demonstration of the CC effect in this novel procedure with targets placed relatively near to, or far from, the observer. In Experiment 2 we manipulate the validity of distractors at these different depths to explore the structure of the associative representations that form during visual search across three-dimensions.
 
+\hypertarget{transparency-and-openness}{%
+\subsection{Transparency and Openness}\label{transparency-and-openness}}
+
+The data, analysis scripts, experimental materials, and the manuscript source files, are available at \href{https://github.com/tombeesley/CCVR}{github.com/tombeesley/CCVR}. We report our determination of sample sizes, the data exclusion criteria, and all of the manipulations. The analyses reported in this manuscript are computationally reproducible from the manuscript source files (using R v4.0.2), which are available at the github repository. The study design and analyses were not pre-registered.
+
 \hypertarget{experiment-1a-and-1b}{%
 \section{Experiment 1a and 1b}\label{experiment-1a-and-1b}}
 
@@ -237,7 +243,7 @@ Twenty-five undergraduate psychology students (mean age = 19.44, SD = 2.02; 19 i
 \hypertarget{materials.}{%
 \subsubsection{Materials.}\label{materials.}}
 
-The experimental materials are available at \href{https://github.com/tombeesley/CCVR}{github.com/tombeesley/CCVR}. An Oculus Rift CV1 headset (Oculus VR), connected to a PC with a NVIDIA GeForce GTX 970 graphics card, delivered the experiment in virtual reality. The Oculus Rift CV1 is a head-mounted display that utilises a stereoscopic OLED display with 2160 x 1200 resolution (1080 x 1200 per eye) at a refresh rate of 90 Hz. Within the headset, images on the computer undergo transformations through two convex hybrid Frensel lenses, warping images and extending the environment to a wide 110° field of view. The headset has a dial that adjusts the separation of the lenses to accommodate for the varying interpupillary distances across participants. Two external infrared tracking sensors were used to track the headset and position the user in 3D space. The experiment was programmed in the Unity engine, which created all the stimulus properties, controlled timing and recorded responses. All dimensions of the program were measured in ``Unity units.'' The spacebar was used for indicating the detection of the target.
+An Oculus Rift CV1 headset (Oculus VR), connected to a PC with a NVIDIA GeForce GTX 970 graphics card, delivered the experiment in virtual reality. The Oculus Rift CV1 is a head-mounted display that utilises a stereoscopic OLED display with 2160 x 1200 resolution (1080 x 1200 per eye) at a refresh rate of 90 Hz. Within the headset, images on the computer undergo transformations through two convex hybrid Frensel lenses, warping images and extending the environment to a wide 110° field of view. The headset has a dial that adjusts the separation of the lenses to accommodate for the varying interpupillary distances across participants. Two external infrared tracking sensors were used to track the headset and position the user in 3D space. The experiment was programmed in the Unity engine, which created all the stimulus properties, controlled timing and recorded responses. All dimensions of the program were measured in ``Unity units.'' The spacebar was used for indicating the detection of the target.
 
 The virtual reality environment depicted an empty room with grey walls where the viewer was situated in the middle of the room. The program allows objects to be placed on any of nine concave surfaces, which radiated from the observer at the origin point (see Figure \ref{fig:schematic}). Two of these surfaces were selected for the two depths (near and far) used in the task. Objects on each surface were approximately equidistant from the observer. Each surface represented an increment of 2 units from the observer.
 
@@ -300,8 +306,6 @@ Experiment 1b employed some minor alterations to the materials and procedure. Si
 
 \hypertarget{results}{%
 \subsection{Results}\label{results}}
-
-The analyses we report are computationally reproducible using the analysis and manuscript files at \href{https://github.com/tombeesley/CCVR}{github.com/tombeesley/CCVR}.
 
 Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of 12.60\% of trials. Normalised RT was computed in order to create Within-subject error bars in all plots.
 
@@ -369,8 +373,6 @@ At the end of the task participants were given a ``generation awareness test.'' 
 
 \hypertarget{results-1}{%
 \subsection{Results}\label{results-1}}
-
-The analyses we report are computationally reproducible using the analysis and manuscript files at \href{https://github.com/tombeesley/CCVR}{github.com/tombeesley/CCVR}.
 
 Trials were excluded on the same basis as in Experiment 1a and 1b. On average, this led to the removal of 9.60\% of trials.
 

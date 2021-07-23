@@ -1,5 +1,5 @@
 ---
-title             : "Examing the role of depth information in contextual cuing using a virtual reality visual search task"
+title             : "Examining the role of depth information in contextual cuing using a virtual reality visual search task"
 shorttitle        : "Depth, VR and contextual cuing"
 author: 
   - name          : "Tom Beesley"
@@ -17,17 +17,18 @@ affiliation:
   - id            : "2"
     institution   : "UNSW Sydney, Australia"
 authornote: |
-  The data, analysis scripts, experimental materials, and the manuscript code, are available at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR). The analyses reported in this manuscript are computationally reproducible using R. 
-  
+  The data, analysis scripts, experimental materials, and the manuscript source files, are available at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR).
   Tom Beesley, Department of Psychology, Lancaster University.
   Ying Yun Tou, School of Psychology, UNSW Sydney.
   Jack Walsh, School of Psychology, UNSW Sydney.
   
 abstract: |
-  Two experiments examined the role that depth plays in the formation of associations during contextual cuing of visual search. Current associative models make predictions about the spatial constraints placed on learning within two-dimensional procedures, but there exists very little evidence of how these predictions translate to three-dimensional space. A virtual reality procedure was used to project the stimuli in three-dimensions. Experiment 1 established a contextual cuing effect using this procedure, while Experiment 2 examined whether the relative distance between repeated distractors and the target, or the position of the distractors relative to the observer modulated contextual cuing. It was found that the contextual cuing effect was consistent across these different conditions. As a result, there was no evidence to suggest that depth information forms a significant part of the representations that form during contextual cuing. These data are therefore broadly consistent with the mechanisms of current associative models of contextual cuing. 
+  Two experiments examined the role that depth plays in the formation of associations during contextual cuing of visual search. Current associative models make predictions about the spatial constraints placed on learning within two-dimensional procedures, but there exists very little evidence of how these predictions translate to three-dimensional space. A virtual reality procedure was used to project the stimuli in three-dimensions. Experiment 1 established a contextual cuing effect using this procedure, while Experiment 2 examined whether the relative distance between repeated distractors and the target, or the position of the distractors relative to the observer modulated contextual cuing. It was found that the contextual cuing effect was consistent across these different conditions. As a result, there was no evidence to suggest that depth information forms a significant part of the representations that form during contextual cuing. These data are therefore broadly consistent with the mechanisms of current associative models of contextual cuing.
+  
+  Public significance statement:  This study provides a test of the way in which visual scenes are processed and learnt about across three-dimensional space. Current models of this behaviour only consider learning in two-dimensional space. The current work therefore provides important insights into how depth information contributes to the memory representations of familiar scenes. 
   
 keywords          : "Visual search, contextual cuing, depth, virtual reality"
-wordcount         : "6805"
+wordcount         : "6834"
 bibliography      : ["references.bib"]
 figsintext        : yes
 floatsintext      : no
@@ -98,6 +99,10 @@ It is well acknowledged that the visual system is highly attuned to the processi
 
 The current set of experiments further explore the role that depth plays in CC of visual search. The experiments use a virtual reality device to project the stimuli in stereoscopic 3D. This allows stimuli to be positioned across a wide field of view, with head movements required to process the visual display in full during the search process. Experiments 1a and 1b provide a simple demonstration of the CC effect in this novel procedure with targets placed relatively near to, or far from, the observer. In Experiment 2 we manipulate the validity of distractors at these different depths to explore the structure of the associative representations that form during visual search across three-dimensions.
 
+## Transparency and Openness
+
+The data, analysis scripts, experimental materials, and the manuscript source files, are available at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR). We report our determination of sample sizes, the data exclusion criteria, and all of the manipulations. The analyses reported in this manuscript are computationally reproducible from the manuscript source files (using R v4.0.2), which are available at the github repository. The study design and analyses were not pre-registered. 
+
 # Experiment 1a and 1b
 
 The current experiment aimed to demonstrate CC in the virtual reality procedure, while also providing a simple manipulation of the target depth. Stimuli in the experiment were positioned at one of two distances from the observer (hereafter 'near' and 'far' depths). On one half of all trials, repeated configurations were presented, in which all distractors across the two depths were positioned in set locations. On the other half of all trials, all distractors were arranged randomly. Orthogonal to this factor, targets were positioned at either near or far locations from the observer ^[At the time of writing this manuscript we became aware of an experiment with a similar rationale and design published by @marek2020].
@@ -121,7 +126,7 @@ load("CCVR03_export.Rdata")
 
 ### Materials.
 
-The experimental materials are available at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR). An Oculus Rift CV1 headset (Oculus VR), connected to a PC with a NVIDIA GeForce GTX 970 graphics card, delivered the experiment in virtual reality. The Oculus Rift CV1 is a head-mounted display that utilises a stereoscopic OLED display with 2160 x 1200 resolution (1080 x 1200 per eye) at a refresh rate of 90 Hz. Within the headset, images on the computer undergo transformations through two convex hybrid Frensel lenses, warping images and extending the environment to a wide 110° field of view. The headset has a dial that adjusts the separation of the lenses to accommodate for the varying interpupillary distances across participants. Two external infrared tracking sensors were used to track the headset and position the user in 3D space. The experiment was programmed in the Unity engine, which created all the stimulus properties, controlled timing and recorded responses. All dimensions of the program were measured in "Unity units". The spacebar was used for indicating the detection of the target.
+An Oculus Rift CV1 headset (Oculus VR), connected to a PC with a NVIDIA GeForce GTX 970 graphics card, delivered the experiment in virtual reality. The Oculus Rift CV1 is a head-mounted display that utilises a stereoscopic OLED display with 2160 x 1200 resolution (1080 x 1200 per eye) at a refresh rate of 90 Hz. Within the headset, images on the computer undergo transformations through two convex hybrid Frensel lenses, warping images and extending the environment to a wide 110° field of view. The headset has a dial that adjusts the separation of the lenses to accommodate for the varying interpupillary distances across participants. Two external infrared tracking sensors were used to track the headset and position the user in 3D space. The experiment was programmed in the Unity engine, which created all the stimulus properties, controlled timing and recorded responses. All dimensions of the program were measured in "Unity units". The spacebar was used for indicating the detection of the target.
 
 The virtual reality environment depicted an empty room with grey walls where the viewer was situated in the middle of the room. The program allows objects to be placed on any of nine concave surfaces, which radiated from the observer at the origin point (see Figure \@ref(fig:schematic)). Two of these surfaces were selected for the two depths (near and far) used in the task. Objects on each surface were approximately equidistant from the observer. Each surface represented an increment of 2 units from the observer. 
 
@@ -168,8 +173,6 @@ Reaction times were measured in milliseconds (ms) from the beginning of a trial 
 Experiment 1b employed some minor alterations to the materials and procedure. Sixteen practice trials were used instead of 10. Breaks were given every 64 trials (every four blocks) compared to every 160 trials in Experiment 1A. In an attempt to combat issues with object occlusion and poor target detection rates, a timeout was given (the word "TIMEOUT" appeared) after 10 seconds of the trial. Experiment 1b also used an updated algorithm controlling the registration of the participants view over targets in an attempt to improve valid target detection.
 
 ## Results
-
-The analyses we report are computationally reproducible using the analysis and manuscript files at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR). 
 
 Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of `r round(mean(CCVR03_perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create Within-subject error bars in all plots.
 
@@ -337,8 +340,6 @@ The procedure was the same as that used in Experiment 1b, with the exception tha
 At the end of the task participants were given a "generation awareness test". Two blocks of 16 trials were given, which each included the 8 repeating configurations from the main task, and 8 new repeating configurations that had been created in an identical manner (i.e., these new configurations were repeated in the second block). On each trial, the target object was replaced by a distractor object. Participants had to centre their view over the distractor they thought was most likely to be the target and press the spacebar. The program computed the discrepancy between the true target and the centre of the visual field, computing this error in two-dimensional space (x and y). This error measure (in unity units) acted as the dependent variable for the awareness task. A smaller error score on repeated compared to random configurations would indicate a level of awareness of where the target was positioned in repeating configurations.
 
 ## Results
-
-The analyses we report are computationally reproducible using the analysis and manuscript files at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR).
 
 Trials were excluded on the same basis as in Experiment 1a and 1b. On average, this led to the removal of `r round(mean(CCVR04_perc_removed$perc),1)`% of trials.
 

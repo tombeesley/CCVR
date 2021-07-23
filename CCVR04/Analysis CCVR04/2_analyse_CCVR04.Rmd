@@ -288,6 +288,27 @@ data_RT_ANOVA <-
 data_RT_ANOVA %>% 
   aov_car(meanRT ~ Error(subj/(test*TT*targ_depth)) + condition, data = .)
 
+
+# EXPLORATORY!
+
+data_RT_ANOVA <- 
+  data_RT_ANOVA %>% 
+  mutate(condition = as.factor(condition),
+         test = as.factor(test))
+
+#get data for the ANOVA on the test data
+data_RT_ANOVA <- 
+  data_test %>% 
+  group_by(subj, TT, targ_depth) %>% 
+  summarise(meanRT = mean(RT)) 
+
+data_RT_ANOVA %>% 
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth)), data = .)
+
+anovaBF(formula = meanRT ~ TT*targ_depth + subj,
+        whichRandom = "subj",
+        data = data_RT_ANOVA)
+
 ```
 
 The main effect of condition (proximal or distal distractors repeating) was not significant, and did not interact with any other factor. 

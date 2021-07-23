@@ -23,6 +23,7 @@ library(broom)
 library(kableExtra)
 library(ggrepel)
 library(afex)
+library(BayesFactor)
 
 theme_set(theme_classic())
 
@@ -246,6 +247,12 @@ data_RT_ANOVA <-
 # show ANOVA table here
 data_RT_ANOVA %>% 
   aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
+
+# output to check in JASP
+data_RT_ANOVA %>% 
+  pivot_wider(names_from = c("epoch", "TT", "targ_depth"), values_from = meanRT) %>% 
+  write_csv("jasp.csv")
+
 
 # calculate a CC effect for each target depth
 CC_effect <- 

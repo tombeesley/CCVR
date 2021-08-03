@@ -114,6 +114,12 @@ dataMain %>%
   filter(num_additional_Rs<10)
 # this analysis isn't reported, but most common was for trials to have 0 (registered response first time), 1, or 2 additional spacebar responses
 
+
+data %>%
+  group_by(sub_exp,subj) %>% 
+  summarise(numTOs = sum(RT>10000)) %>% 
+  view()
+
 # filter trials with more than 2 responses (num additional Rs > 1), timeouts,
 # and outlier RTs  
 data <- 
@@ -155,16 +161,28 @@ Data processing: trials which led to timeouts, and trials that had more than one
 
 ```{r}
 
-# summarise the overall mean RT for each P 
+# Is anyone an outlier in terms of mean RT? 
 overall_RT_Means <- 
   data %>% 
   group_by(sub_exp, subj) %>% 
   summarise(meanRT = mean(RT)) %>% 
   mutate(z_meanRT = scale(meanRT)) 
 
-# Is anyone an outlier in terms of mean RT? 
 overall_RT_Means %>% 
   filter(!between(z_meanRT, -2.5, 2.5)) # no Ps detected
+
+# Is anyone an outlier in terms of percent removed?
+perc_removed <- 
+  perc_removed %>% 
+  mutate(z_perc = scale(perc))
+
+outlier_perc_removed <- 
+  perc_removed %>% 
+  filter(!between(z_perc, -2.5, 2.5)) %>%  # one P detected
+  pull(subj)
+
+# remove the outlier participant from the sample
+data <- filter(data,!subj %in% outlier_perc_removed)
 
 ```
 
@@ -192,11 +210,36 @@ RT_boxplot <-
 Mean RTs for each participant were computed and the mean across the sample was `r round(mean(overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of RT.
 
 ```{r }
-# full 4-way reveals sub_exp did not interact with any other factor.
-data %>% 
+
+data_RT_ANOVA_sub_exp <- 
+  data %>% 
   group_by(sub_exp, subj, TT, targ_depth, epoch) %>% 
-  summarise(meanRT = mean(RT)) %>% 
+  summarise(meanRT = mean(RT))
+
+# full 4-way ANOVA
+data_RT_ANOVA_sub_exp %>% 
   aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)) + sub_exp, data = .)
+
+# ANOVA for 1A
+data_RT_ANOVA_sub_exp %>% 
+  filter(sub_exp == "1A") %>% 
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
+
+# ANOVA for 1B
+data_RT_ANOVA_sub_exp %>% 
+  filter(sub_exp == "1B") %>% 
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
+
+# Bayesian ANOVA
+data_RT_ANOVA_sub_exp <- 
+  data_RT_ANOVA_sub_exp %>% 
+  as_tibble() %>% 
+  mutate(across(c(sub_exp,TT,targ_depth,epoch), as.factor))
+
+anovaBF(formula = meanRT ~ TT*targ_depth*epoch*sub_exp + subj,
+        whichRandom = "subj",
+        data = data_RT_ANOVA_sub_exp)
+
 ```
 
 An ANOVA revealed that the sub-experiment factor (1A/1B) was not significant (F \< 1) and did not interact with any other factor. We therefore simplified the analysis to combine the data across the sub-experiment factor.
@@ -217,6 +260,7 @@ legendLBLs <- c("Near-T-Repeated", "Near-T-Random", "Far-T-Repeated", "Far-T-Ran
 # main RT figure
 RT_avgs_figure <- 
   data %>% 
+  filter(sub_exp == "1B") %>% 
   group_by(TT, targ_depth, epoch) %>% 
   summarise(meanRT = mean(RT), 
             SE = sd(norm_RT)/sqrt(n())) %>% 

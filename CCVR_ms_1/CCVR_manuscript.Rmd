@@ -103,6 +103,10 @@ The current set of experiments further explore the role that depth plays in CC o
 
 The data, analysis scripts, experimental materials, and the manuscript source files, are available at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR). We report our determination of sample sizes, the data exclusion criteria, and all of the manipulations. The analyses reported in this manuscript are computationally reproducible from the manuscript source files (using R v4.0.2), which are available at the github repository. The study design and analyses were not pre-registered. 
 
+# Experiment 1
+
+While running Experiment 1, it was found that there were occasions on which some participants struggled to complete a trial, and the experiment could not progress until the target had been accurately detected. To alleviate this issue, we added a timeout to the trial procedure, terminating the trial after 10 seconds. Other minor adjustments were made to the procedure. These changes were made in an attempt to increase the amount of data retained for analysis. We did not anticipate that these changes would affect the variables of interest in the experiment (nor did they). We present these two procedures as Experiments 1a and 1b, but present the results together. 
+
 # Experiment 1a and 1b
 
 The current experiment aimed to demonstrate CC in the virtual reality procedure, while also providing a simple manipulation of the target depth. Stimuli in the experiment were positioned at one of two distances from the observer (hereafter 'near' and 'far' depths). On one half of all trials, repeated configurations were presented, in which all distractors across the two depths were positioned in set locations. On the other half of all trials, all distractors were arranged randomly. Orthogonal to this factor, targets were positioned at either near or far locations from the observer ^[At the time of writing this manuscript we became aware of an experiment with a similar rationale and design published by @marek2020].

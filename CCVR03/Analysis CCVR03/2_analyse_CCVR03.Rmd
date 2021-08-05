@@ -240,6 +240,40 @@ anovaBF(formula = meanRT ~ TT*targ_depth*epoch*sub_exp + subj,
         whichRandom = "subj",
         data = data_RT_ANOVA_sub_exp)
 
+
+# exploring the difficulty of target detection at different depths
+
+# how many trials contributed to the analysis by target depth
+
+data %>% 
+  group_by(sub_exp, subj, targ_depth) %>% 
+  summarise(prop = n()/240) %>% 
+  group_by(sub_exp,targ_depth) %>% 
+  summarise(meanProp = mean(prop))
+
+# clearly a difference in 1A but not in 1B
+
+# any unusual participants?
+
+depth_difficulty_effect <- 
+  data %>% 
+  group_by(sub_exp, subj, targ_depth) %>% 
+  summarise(prop = n()/240) %>%
+  pivot_wider(names_from = targ_depth, values_from = prop) %>% 
+  mutate(discrepancy = near-far) 
+
+
+depth_difficulty_effect %>% 
+  ggplot(aes(discrepancy, colour = sub_exp)) +
+  geom_density()
+
+# it looks like participants in 1A had a much more difficult time with far targets
+
+# remove those with large discrepancy
+depth_difficulty_effect %>% 
+  filter(!between(discrepancy,-.15,.15)) %>% 
+  pull(subj)
+
 ```
 
 An ANOVA revealed that the sub-experiment factor (1A/1B) was not significant (F \< 1) and did not interact with any other factor. We therefore simplified the analysis to combine the data across the sub-experiment factor.

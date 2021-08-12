@@ -17,16 +17,16 @@ affiliation:
   - id            : "2"
     institution   : "UNSW Sydney, Australia"
 authornote: |
-  The data, analysis scripts, experimental materials, and the manuscript source files, are available at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR).
   Tom Beesley, Department of Psychology, Lancaster University.
   Ying Yun Tou, School of Psychology, UNSW Sydney.
   Jack Walsh, School of Psychology, UNSW Sydney.
   
+  The data, analysis scripts, experimental materials, and the manuscript source files, are available at [github.com/tombeesley/CCVR](https://github.com/tombeesley/CCVR).
 abstract: |
   Two experiments examined the role that depth plays in the formation of associations during contextual cuing of visual search. Current associative models make predictions about the spatial constraints placed on learning within two-dimensional procedures, but there exists very little evidence of how these predictions translate to three-dimensional space. A virtual reality procedure was used to project the stimuli in three-dimensions. Experiment 1 established a contextual cuing effect using this procedure, while Experiment 2 examined whether the relative distance between repeated distractors and the target, or the position of the distractors relative to the observer modulated contextual cuing. It was found that the contextual cuing effect was consistent across these different conditions. As a result, there was no evidence to suggest that depth information forms a significant part of the representations that form during contextual cuing. These data are therefore broadly consistent with the mechanisms of current associative models of contextual cuing.
   
-  Public significance statement:  This study provides a test of the way in which visual scenes are processed and learnt about across three-dimensional space. Current models of this behaviour only consider learning in two-dimensional space. The current work therefore provides important insights into how depth information contributes to the memory representations of familiar scenes. 
   
+  Public significance statement:  This study provides a test of the way in which visual scenes are processed and learnt about across three-dimensional space. Current models of this behaviour only consider learning in two-dimensional space. The current work therefore provides important insights into how depth information contributes to the memory representations of familiar scenes. 
 keywords          : "Visual search, contextual cuing, depth, virtual reality"
 wordcount         : "6834"
 bibliography      : ["references.bib"]
@@ -105,19 +105,18 @@ The data, analysis scripts, experimental materials, and the manuscript source fi
 
 # Experiment 1
 
-While running Experiment 1, it was found that there were occasions on which some participants struggled to complete a trial, and the experiment could not progress until the target had been accurately detected. To alleviate this issue, we added a timeout to the trial procedure, terminating the trial after 10 seconds. Other minor adjustments were made to the procedure. These changes were made in an attempt to increase the amount of data retained for analysis. We did not anticipate that these changes would affect the variables of interest in the experiment (nor did they). We present these two procedures as Experiments 1a and 1b, but present the results together. 
-
-# Experiment 1a and 1b
-
 The current experiment aimed to demonstrate CC in the virtual reality procedure, while also providing a simple manipulation of the target depth. Stimuli in the experiment were positioned at one of two distances from the observer (hereafter 'near' and 'far' depths). On one half of all trials, repeated configurations were presented, in which all distractors across the two depths were positioned in set locations. On the other half of all trials, all distractors were arranged randomly. Orthogonal to this factor, targets were positioned at either near or far locations from the observer ^[At the time of writing this manuscript we became aware of an experiment with a similar rationale and design published by @marek2020].
 
 ```{r power-exp1}
 power_exp1 <- pwr.t.test(type = "paired", power = .90, sig = .05, d = .5)
 ```
 
-@vadillo2016 estimated an effect size of *d~z~* = 1 in typical CC experiments. Given the novelty of the procedure, we took a cautionary approach by estimating a diminished effect size of *d~z~* = `r power_exp1$d`. To achieve power of `r power_exp1$power`, with $\alpha$ = `r power_exp1$sig.level`, required a minimum sample of `r ceiling(power_exp1$n)`, which was achieved across Experiments 1a and 1b.
+@vadillo2016 estimated an effect size of *d~z~* = 1 in typical CC experiments. Given the novelty of the procedure, we took a cautionary approach by estimating a diminished effect size of *d~z~* = `r power_exp1$d`. To achieve power of `r power_exp1$power`, with $\alpha$ = `r power_exp1$sig.level`, required a minimum sample of `r ceiling(power_exp1$n)`, which was achieved in Experiment 1 (Experiment 1a and 1b combined).
 
-## Method - Experiment 1a
+While running Experiment 1, it was found that there were occasions on which some participants struggled to complete a trial, and the experiment could not progress until the target had been accurately detected. To alleviate this issue, we added a timeout to the trial procedure, terminating the trial after 10 seconds. We also made some subtle changes to the target detection algorithm. We present the original procedure as Experiment 1a and the modified procedure as Experiment 1b. We assess the impact this modification made to the ease of target detection, and we include the "sub-experiment" factor in our analysis.
+
+## Experiment 1a
+## Method
 
 ```{r}
 # load data from CCVR03 
@@ -166,7 +165,8 @@ The main task consisted of 480 trials, divided into 30 blocks (16 trials per blo
 
 Reaction times were measured in milliseconds (ms) from the beginning of a trial to an accepted target detection response for each trial. Any rejected target detection responses - those that were made when the headset was not oriented accurately on the target - were recorded and used to determine the difficulty of target detection on any given trial.
 
-## Method - Experiment 1b
+## Experiment 1b
+## Method
 
 ### Participants.
 
@@ -178,11 +178,21 @@ Experiment 1b employed some minor alterations to the materials and procedure. Si
 
 ## Results
 
-Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of `r round(mean(CCVR03_perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create Within-subject error bars in all plots.
+Since Experiment 1B used a timeout of 10 seconds, we imposed the same cutoff for our analysis of reaction times in Experiment 1A. Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of `r round(mean(CCVR03_perc_removed$perc),1)`% of trials. Two participants had an unusually high number of trials removed, and we excluded these 
 
-Mean RTs for each participant were computed and the mean across the sample was `r round(mean(CCVR03_overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(CCVR03_overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of their mean RT.
+Mean RTs for each participant were computed and the mean across the sample was `r round(mean(CCVR03_overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(CCVR03_overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of their mean RT. 
 
-An ANOVA revealed that the sub-experiment factor (1A/1B) was not significant (F \< 1) and did not interact with any other factor. We therefore simplified the analysis to combine the data across the two sub-experiments.
+We examined the proportion of 
+
+
+
+Normalised RT was computed in order to create Within-subject error bars in all plots.
+
+
+
+
+
+
 
 Figure \@ref(fig:Exp1-RT-figure) shows the RT data across the 6 epochs. Within-subject error bars were computed by a process of normalising the RT data for the sample [@cousineau2005]. RTs decreased with practice on the task, and were shorter for repeated configurations than for random configurations. There was also a clear target location effect, with responses being much slower when the target was located on the near surface compared to the far surface.
 

@@ -65,13 +65,11 @@ Set 4 - Far target random configurations
 **Analysis report**
 
 ```{r}
-
 # get demographic information from each participant
 data_demog <- 
   dataMain %>% 
   group_by(subj) %>% 
   slice(1) %>% # take top row
-  ungroup() %>% 
   select(subj,sub_exp, age,gender)
 
 # create summary stats of gender, number of participants
@@ -95,16 +93,12 @@ basic_resp_stats <-
             perc_Rs_Over2 = sum(num_additional_Rs>1)/n()) %>% 
   group_by(sub_exp) %>% 
   summarise_all(list(mean = mean, sd = sd)) %>% # from participant summaries, compute sub exp. summary stats
-  select(-contains("subj")) 
+  select(-contains("subj"))
+```
 
-# create table from those summary statistics
-table_basic_resp_stats <- 
-  basic_resp_stats %>% 
-  pivot_longer(cols = mean_RT_mean:perc_Rs_Over2_sd, names_to = "stat") %>% 
-  kable(digits = 2) %>% 
-  kable_styling(latex_options = "hold_position", position = "left")
 
-# what was the distribution of responses by experiment?
+```{r}
+# what was the distribution of responses by sub_experiment?
 dataMain %>% 
   filter(pattern %in% c(2,4)) %>% 
   group_by(sub_exp, num_additional_Rs) %>%
@@ -113,18 +107,17 @@ dataMain %>%
   mutate(prop = n_trials/sum(n_trials)) %>% 
   filter(num_additional_Rs<10)
 # this analysis isn't reported, but most common was for trials to have 0 (registered response first time), 1, or 2 additional spacebar responses
+```
 
 
-data %>%
-  group_by(sub_exp,subj) %>% 
-  summarise(numTOs = sum(RT>10000)) %>% 
-  view()
-
+```{r}
 # filter trials with more than 2 responses (num additional Rs > 1), timeouts,
 # and outlier RTs  
 data <- 
   dataMain %>% 
-  filter(num_additional_Rs<=1, dist_to_T>=0) %>%  # too many responses and timeouts
+  filter(num_additional_Rs<=1, 
+         dist_to_T>=0,
+         RT < 10000) %>%  # too many responses and timeouts
   group_by(subj) %>% 
   mutate(zRT = scale(RT)) %>% 
   filter(between(zRT,-2.5,2.5)) %>% 
@@ -151,16 +144,11 @@ data <-
 
 There were `r demog_summary[demog_summary$sub_exp=="1A",'n']` participants in Experiment 1A and `r demog_summary[demog_summary$sub_exp=="1B",'n']` in Experiment 1B.
 
-Summary statistics for RTs and number of responses made:
-
-`r table_basic_resp_stats`
-
 The major procedural differences between Experiment 1A and 1B was an improvement in the target detection method and the inclusion of a timeout of 10s in the latter.
 
 Data processing: trials which led to timeouts, and trials that had more than one additional responses (i.e., up to 2 responses allowed) were removed. Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average this resulted in the loss of `r round(mean(perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create within-subject error bars in all plots.
 
 ```{r}
-
 # Is anyone an outlier in terms of mean RT? 
 overall_RT_Means <- 
   data %>% 
@@ -176,15 +164,63 @@ perc_removed <-
   perc_removed %>% 
   mutate(z_perc = scale(perc))
 
-outlier_perc_removed <- 
+perc_removed_outliers <- 
   perc_removed %>% 
-  filter(!between(z_perc, -2.5, 2.5)) %>%  # one P detected
+  filter(!between(z_perc, -2.5, 2.5)) %>%  # two Ps detected
   pull(subj)
 
 # remove the outlier participant from the sample
-data <- filter(data,!subj %in% outlier_perc_removed)
+data <- filter(data,!subj %in% perc_removed_outliers)
+```
+
+We then looked at how many trials contributed to the analysis by the factor of target depth. An imbalance here would be potentially problematic for the analysis and the extent to which learning occurred for different contexts. 
+
+```{r}
+# exploring the difficulty of target detection at different depths
+
+# how many trials contributed to the analysis by target depth
+
+data %>% 
+  group_by(sub_exp, subj, targ_depth) %>% 
+  summarise(prop = n()/240) %>% 
+  group_by(sub_exp,targ_depth) %>% 
+  summarise(meanProp = mean(prop))
+
+# clearly a difference in 1A but not in 1B
+
+# any unusual participants?
+
+depth_difficulty_measure <- 
+  data %>% 
+  group_by(sub_exp, subj, targ_depth) %>% 
+  summarise(prop = n()/240) %>%
+  pivot_wider(names_from = targ_depth, values_from = prop) %>% 
+  mutate(discrepancy = near-far) 
+
+
+depth_difficulty_measure %>% 
+  ggplot(aes(discrepancy, colour = sub_exp)) +
+  geom_density()
+
+# it looks like participants in 1A had a much more difficult time with far targets
+
+# remove those with large discrepancy
+depth_difficulty_outliers <- 
+  depth_difficulty_measure %>% 
+  filter(!between(discrepancy,-.15,.15)) %>% 
+  pull(subj)
+
+# remove the depth difficulty outliers from the sample
+data <- filter(data,!subj %in% depth_difficulty_outliers)
+
+# remove them from the measure of depth difficulty
+depth_difficulty_measure <- 
+  depth_difficulty_measure %>% 
+  filter(between(discrepancy,-.15,.15)) 
 
 ```
+
+`r length(depth_difficulty_outliers)` participants were removed from the analysis, as the discrepancy in the percentage of trials retained for near and far targets was greater than 15%.
 
 ```{r}
 
@@ -208,75 +244,6 @@ RT_boxplot <-
 ```
 
 Mean RTs for each participant were computed and the mean across the sample was `r round(mean(overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of RT.
-
-```{r }
-
-data_RT_ANOVA_sub_exp <- 
-  data %>% 
-  group_by(sub_exp, subj, TT, targ_depth, epoch) %>% 
-  summarise(meanRT = mean(RT))
-
-# full 4-way ANOVA
-data_RT_ANOVA_sub_exp %>% 
-  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)) + sub_exp, data = .)
-
-# ANOVA for 1A
-data_RT_ANOVA_sub_exp %>% 
-  filter(sub_exp == "1A") %>% 
-  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
-
-# ANOVA for 1B
-data_RT_ANOVA_sub_exp %>% 
-  filter(sub_exp == "1B") %>% 
-  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
-
-# Bayesian ANOVA
-data_RT_ANOVA_sub_exp <- 
-  data_RT_ANOVA_sub_exp %>% 
-  as_tibble() %>% 
-  mutate(across(c(sub_exp,TT,targ_depth,epoch), as.factor))
-
-anovaBF(formula = meanRT ~ TT*targ_depth*epoch*sub_exp + subj,
-        whichRandom = "subj",
-        data = data_RT_ANOVA_sub_exp)
-
-
-# exploring the difficulty of target detection at different depths
-
-# how many trials contributed to the analysis by target depth
-
-data %>% 
-  group_by(sub_exp, subj, targ_depth) %>% 
-  summarise(prop = n()/240) %>% 
-  group_by(sub_exp,targ_depth) %>% 
-  summarise(meanProp = mean(prop))
-
-# clearly a difference in 1A but not in 1B
-
-# any unusual participants?
-
-depth_difficulty_effect <- 
-  data %>% 
-  group_by(sub_exp, subj, targ_depth) %>% 
-  summarise(prop = n()/240) %>%
-  pivot_wider(names_from = targ_depth, values_from = prop) %>% 
-  mutate(discrepancy = near-far) 
-
-
-depth_difficulty_effect %>% 
-  ggplot(aes(discrepancy, colour = sub_exp)) +
-  geom_density()
-
-# it looks like participants in 1A had a much more difficult time with far targets
-
-# remove those with large discrepancy
-depth_difficulty_effect %>% 
-  filter(!between(discrepancy,-.15,.15)) %>% 
-  pull(subj)
-
-```
-
-An ANOVA revealed that the sub-experiment factor (1A/1B) was not significant (F \< 1) and did not interact with any other factor. We therefore simplified the analysis to combine the data across the sub-experiment factor.
 
 RTs were analysed by averaging the data across five consecutive blocks, producing 6 epochs of 80 trials. As can be seen from the figure, RTs were slower for near targets compared to far targets. A contextual cuing effect appears to be present for both the set of repeated configurations paired with near targets and those paired with far targets. Numerically the CC effect looks larger for those configurations paired with far targets.
 
@@ -315,22 +282,36 @@ RT_avgs_figure # print figure
 ```
 
 
-```{r include = TRUE, message = FALSE}
+```{r include = FALSE, message = FALSE}
 # save data for statistical analysis
 data_RT_ANOVA <- 
   data %>% 
-  group_by(subj, epoch, TT, targ_depth) %>% 
+  group_by(sub_exp, subj, TT, targ_depth, epoch) %>% 
   summarise(meanRT = mean(RT))
 
-# show ANOVA table here
+# full 4-way ANOVA
 data_RT_ANOVA %>% 
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)) + sub_exp, data = .)
+
+# ANOVA for 1A
+data_RT_ANOVA %>% 
+  filter(sub_exp == "1A") %>% 
   aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
 
-# output to check in JASP
+# ANOVA for 1B
 data_RT_ANOVA %>% 
-  pivot_wider(names_from = c("epoch", "TT", "targ_depth"), values_from = meanRT) %>% 
-  write_csv("jasp.csv")
+  filter(sub_exp == "1B") %>% 
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
 
+# Bayesian ANOVA
+data_RT_ANOVA <- 
+  data_RT_ANOVA %>% 
+  as_tibble() %>% 
+  mutate(across(c(sub_exp,subj,TT,targ_depth,epoch), as.factor))
+
+# anovaBF(formula = meanRT ~ TT*targ_depth*epoch*sub_exp + subj,
+#         whichRandom = "subj",
+#         data = data_RT_ANOVA)
 
 # calculate a CC effect for each target depth
 CC_effect <- 
@@ -342,7 +323,7 @@ CC_effect <-
          CCeffect = random - repeated)
 ```
 
-ANOVA revealed main effects of trial type (a CC effect: faster RTs to Repeated than to Random configurations), target depth (faster RTs to far targets compared to near targets), and epoch (RTs decreased across epochs). The trial type by target depth interaction was significant, suggesting that the CC effect was greater in the case of configurations that had far targets compared to near targets. The trial type by epoch interaction was significant, indicating that RTs decreased more for repeated configurations compared to random configurations. The target depth by epoch interaction was also significant, indicating that RTs decreased more for configurations with far targets compared to those for near targets. The three way interaction was not significant.
+ANOVA revealed main effects of trial type (a CC effect: faster RTs to Repeated than to Random configurations), target depth (faster RTs to far targets compared to near targets), and epoch (RTs decreased across epochs). The trial type by target depth interaction was not significant. The trial type by epoch interaction was significant, indicating that RTs decreased more for repeated configurations compared to random configurations. The target depth by epoch interaction was also significant, indicating that RTs decreased more for configurations with far targets compared to those for near targets. The three way interaction was not significant.
 
 ```{r message = FALSE}
 # create new variables with experiment specific names
@@ -350,6 +331,9 @@ ANOVA revealed main effects of trial type (a CC effect: faster RTs to Repeated t
 CCVR03_demog_summary = demog_summary
 CCVR03_basic_resp_stats = basic_resp_stats
 CCVR03_perc_removed = perc_removed
+CCVR03_perc_removed_outliers = perc_removed_outliers
+CCVR03_depth_difficulty_measure = depth_difficulty_measure
+CCVR03_depth_difficulty_outliers = depth_difficulty_outliers
 CCVR03_overall_RT_Means = overall_RT_Means
 CCVR03_RT_avgs_figure = RT_avgs_figure
 CCVR03_data_RT_ANOVA = data_RT_ANOVA
@@ -358,6 +342,9 @@ CCVR03_CC_effect = CC_effect
 save(CCVR03_demog_summary,
      CCVR03_basic_resp_stats,
      CCVR03_perc_removed,
+     CCVR03_perc_removed_outliers,
+     CCVR03_depth_difficulty_measure,
+     CCVR03_depth_difficulty_outliers,
      CCVR03_overall_RT_Means,
      CCVR03_RT_avgs_figure,
      CCVR03_data_RT_ANOVA,

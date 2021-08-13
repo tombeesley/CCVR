@@ -160,12 +160,12 @@ overall_RT_Means %>%
   filter(!between(z_meanRT, -2.5, 2.5)) # no Ps detected
 
 # Is anyone an outlier in terms of percent removed?
-perc_removed <- 
-  perc_removed %>% 
+perc_removed <-
+  perc_removed %>%
   mutate(z_perc = scale(perc))
 
-perc_removed_outliers <- 
-  perc_removed %>% 
+perc_removed_outliers <-
+  perc_removed %>%
   filter(!between(z_perc, -2.5, 2.5)) %>%  # two Ps detected
   pull(subj)
 
@@ -196,7 +196,6 @@ depth_difficulty_measure <-
   summarise(prop = n()/240) %>%
   pivot_wider(names_from = targ_depth, values_from = prop) %>% 
   mutate(discrepancy = near-far) 
-
 
 depth_difficulty_measure %>% 
   ggplot(aes(discrepancy, colour = sub_exp)) +
@@ -261,8 +260,7 @@ legendLBLs <- c("Near-T-Repeated", "Near-T-Random", "Far-T-Repeated", "Far-T-Ran
 # main RT figure
 RT_avgs_figure <- 
   data %>% 
-  filter(sub_exp == "1B") %>% 
-  group_by(TT, targ_depth, epoch) %>% 
+  group_by(sub_exp, TT, targ_depth, epoch) %>% 
   summarise(meanRT = mean(RT), 
             SE = sd(norm_RT)/sqrt(n())) %>% 
   ggplot(aes(x = epoch, y = meanRT, group = interaction(TT, targ_depth))) +
@@ -276,7 +274,8 @@ RT_avgs_figure <-
                     values = c("black", "white", "black", "white")) +
   scale_shape_manual(name = "",
                      labels = legendLBLs,
-                     values = c(21,21,22,22))
+                     values = c(21,21,22,22)) +
+  facet_wrap(vars(sub_exp))
 
 RT_avgs_figure # print figure
 ```

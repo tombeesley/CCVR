@@ -178,23 +178,11 @@ Experiment 1b employed some minor alterations to the materials and procedure. Si
 
 ## Results
 
-Since Experiment 1B used a timeout of 10 seconds, we imposed the same cutoff for our analysis of reaction times in Experiment 1A. Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of `r round(mean(CCVR03_perc_removed$perc),1)`% of trials. Two participants had an unusually high number of trials removed, and we excluded these 
+Since Experiment 1B used a timeout of 10 seconds, we imposed the same cutoff for our analysis of reaction times in Experiment 1A. Trials which led to timeouts and trials that had more than two response attempts were removed (i.e., up to 2 spacebar responses were allowed). Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average, these data processing steps led to the removal of `r round(mean(CCVR03_perc_removed$perc),1)`% of trials. Mean RTs for each participant were computed and the mean across the sample was `r round(mean(CCVR03_overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(CCVR03_overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of their mean RT. 
 
-Mean RTs for each participant were computed and the mean across the sample was `r round(mean(CCVR03_overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(CCVR03_overall_RT_Means$meanRT),0)`). No participants were identified as outliers in terms of their mean RT. 
+Two participants had an unusually high proportion of trials removed (greater than 2.5 SDs of the mean proportion of trials removed), and we excluded these two participants from further analysis. We next examined the proportion of trials contributing to the analysis across trials with targets at the two different depths. Our concern here was that if targets were harder to detect at the more distant depth, which would result in a greater level of exclusion for those trials, that this may bias the size of the contextual cuing for trials with targets at different depths. We identified 6 participants (4 from Experiment 1a and 2 from Experiment 1b) that had a high discrepancy in the proportion of excluded trials across the factor of target depth (greater than 15% difference in the proportion of trials excluded) and we excluded these participants from further analysis. The final proportion of trials contributing to the analysis in Experiment 1a was 93.9% and 88.2% for near and far targets, respectively, and in Experiment 1b was 87.9% and 88.4% for near and far targets, respectively. 
 
-We examined the proportion of 
-
-
-
-Normalised RT was computed in order to create Within-subject error bars in all plots.
-
-
-
-
-
-
-
-Figure \@ref(fig:Exp1-RT-figure) shows the RT data across the 6 epochs. Within-subject error bars were computed by a process of normalising the RT data for the sample [@cousineau2005]. RTs decreased with practice on the task, and were shorter for repeated configurations than for random configurations. There was also a clear target location effect, with responses being much slower when the target was located on the near surface compared to the far surface.
+Normalised RT was computed in order to create Within-subject error bars in all plots. Figure \@ref(fig:Exp1-RT-figure) shows the RT data across the 6 epochs. Within-subject error bars were computed by a process of normalising the RT data for the sample [@cousineau2005]. RTs decreased with practice on the task, and were shorter for repeated configurations than for random configurations. There was also a clear target location effect, with responses being much slower when the target was located on the near surface compared to the far surface.
 
 (ref:Exp1-RT-figure) RT data for Experiment 1A and 1B.
 
@@ -211,7 +199,8 @@ CCVR03_RT_avgs_figure +
                                     face = "bold",
                                     margin = margin(r = 15)),
         legend.text = element_text(size = 12),
-        legend.key.size = unit(1,"cm"))
+        legend.key.size = unit(1,"cm")) +
+  facet_wrap(vars(sub_exp))
 
 ```
 
@@ -219,7 +208,7 @@ CCVR03_RT_avgs_figure +
 # ANOVA of RT from CCVR03, by trial type, target depth and epoch
 exp1_anova <- 
   CCVR03_data_RT_ANOVA %>% 
-  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)), data = .)
+  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)) + sub_exp, data = .)
 
 # simple main effect of trial type
 sme_TT <- 

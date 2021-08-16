@@ -28,7 +28,7 @@ abstract: |
   
   Public significance statement:  This study provides a test of the way in which visual scenes are processed and learnt about across three-dimensional space. Current models of this behaviour only consider learning in two-dimensional space. The current work therefore provides important insights into how depth information contributes to the memory representations of familiar scenes. 
 keywords          : "Visual search, contextual cuing, depth, virtual reality"
-wordcount         : "6834"
+wordcount         : "7088"
 bibliography      : ["references.bib"]
 figsintext        : yes
 floatsintext      : no

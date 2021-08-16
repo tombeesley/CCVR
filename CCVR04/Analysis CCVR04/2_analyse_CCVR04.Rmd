@@ -43,7 +43,7 @@ dataMain <-
   data %>% 
   filter(phase == 1) %>% # main phase of the task
   mutate(TT = if_else(set %in% c(1,2), "Repeated", "Random"), # recode "set" variable into 2 variables
-         targ_depth = if_else(set %in% c(1,3), "Near targets", "Far targets"),
+         targ_depth = if_else(set %in% c(1,3), "Near", "Far"),
          epoch = ceiling(block/2)) %>% 
   select(exp:phase, epoch, block:set, TT, targ_depth, everything())
 
@@ -171,6 +171,53 @@ data <- filter(data,!subj %in% outlier_meanRTs)
 ```
 Mean RTs for each participant were computed and the mean across the sample was `r round(mean(overall_RT_Means$meanRT),0)` ms (SD = `r round(sd(overall_RT_Means$meanRT),0)`). `r length(outlier_meanRTs)` participants [`r outlier_meanRTs`] produced means that were more than 2.5 SDs above the mean of the sample, and were removed from further analysis. 
 
+
+```{r}
+# exploring the difficulty of target detection at different depths
+
+# how many trials contributed to the analysis by target depth
+
+data %>% 
+  group_by(subj, targ_depth) %>% 
+  summarise(prop = n()/240) %>% 
+  group_by(targ_depth) %>% 
+  summarise(meanProp = mean(prop))
+
+# clearly a difference in 1A but not in 1B
+
+# any unusual participants?
+
+depth_difficulty_measure <- 
+  data %>% 
+  group_by(subj, targ_depth) %>% 
+  summarise(prop = n()/240) %>%
+  pivot_wider(names_from = targ_depth, values_from = prop) %>% 
+  mutate(discrepancy = Near-Far) 
+
+depth_difficulty_measure %>% 
+  ggplot(aes(discrepancy)) +
+  geom_density()
+
+# it looks like participants in 1A had a much more difficult time with far targets
+
+# remove those with large discrepancy
+depth_difficulty_outliers <- 
+  depth_difficulty_measure %>% 
+  filter(!between(discrepancy,-.15,.15)) %>% 
+  pull(subj)
+
+# remove the depth difficulty outliers from the sample
+data <- filter(data,!subj %in% depth_difficulty_outliers)
+
+# remove them from the measure of depth difficulty
+depth_difficulty_measure <- 
+  depth_difficulty_measure %>% 
+  filter(between(discrepancy,-.15,.15)) 
+
+```
+
+
+
 RTs were analysed by averaging the data across two consecutive blocks, producing 31 epochs of XX trials. As can be seen from the figure, RTs were slower for near targets compared to far targets. At three points in the experiment, random trials were introduced (epochs 9 and 10, 19 and 20, 29 and 30). These seemed to cause the expected increase in RT, which is evident particularly later on in the experiment.
 
 ```{r include = TRUE, warning=FALSE}
@@ -180,7 +227,7 @@ RTs were analysed by averaging the data across two consecutive blocks, producing
 data <- 
   data %>%
   mutate(TT = factor(TT, levels = c("Repeated", "Random")),
-         targ_depth = factor(targ_depth, levels = c("Near targets", "Far targets")))
+         targ_depth = factor(targ_depth, levels = c("Near", "Far")))
 
 legendLBLs <- c("Repeated Near T", "Random Near T", "Repeated Far T", "Random Far T")
 
@@ -241,7 +288,10 @@ test_figure <-
   data_test %>% 
   mutate(condition = recode(condition, 
                             "distal_repeated" = "Distal contingencies", 
-                            "proximal_repeated" = "Proximal contingencies")) %>%
+                            "proximal_repeated" = "Proximal contingencies"),
+         targ_depth = recode(targ_depth,
+                             "Near" = "Near targets",
+                             "Far" = "Far targets")) %>%
   group_by(condition, TT, targ_depth, test) %>%
   summarise(meanRT = mean(RT), 
             SE = sd(norm_RT)/sqrt(n())) %>% 
@@ -288,26 +338,6 @@ data_RT_ANOVA <-
 data_RT_ANOVA %>% 
   aov_car(meanRT ~ Error(subj/(test*TT*targ_depth)) + condition, data = .)
 
-
-# EXPLORATORY!
-
-data_RT_ANOVA <- 
-  data_RT_ANOVA %>% 
-  mutate(condition = as.factor(condition),
-         test = as.factor(test))
-
-#get data for the ANOVA on the test data
-data_RT_ANOVA <- 
-  data_test %>% 
-  group_by(subj, TT, targ_depth) %>% 
-  summarise(meanRT = mean(RT)) 
-
-data_RT_ANOVA %>% 
-  aov_car(meanRT ~ Error(subj/(TT*targ_depth)), data = .)
-
-anovaBF(formula = meanRT ~ TT*targ_depth + subj,
-        whichRandom = "subj",
-        data = data_RT_ANOVA)
 
 ```
 
@@ -383,13 +413,13 @@ We have explored the allocentric contingencies in the design, but we can also lo
 # compute new variables based on egocentricity of the repeated distractors
 data_ego_test <- 
   data_test %>%
-  mutate(egocentric = case_when(condition == "proximal_repeated" & targ_depth == "Near targets"
+  mutate(egocentric = case_when(condition == "proximal_repeated" & targ_depth == "Near"
                                 ~ "Egocentric - Near",
-                                condition == "proximal_repeated" & targ_depth == "Far targets"
+                                condition == "proximal_repeated" & targ_depth == "Far"
                                 ~ "Egocentric - Far",
-                                condition == "distal_repeated" & targ_depth == "Near targets"
+                                condition == "distal_repeated" & targ_depth == "Near"
                                 ~ "Egocentric - Far",
-                                condition == "distal_repeated" & targ_depth == "Far targets"
+                                condition == "distal_repeated" & targ_depth == "Far"
                                 ~ "Egocentric - Near")) %>% 
   mutate(egocentric = fct_relevel(egocentric, "Egocentric - Near", "Egocentric - Far"))
 
@@ -448,10 +478,11 @@ data_ego_RT_ANOVA %>%
 ```{r}
 # awareness data analysis - this is not reported here, but is reported in the main manuscript
 
-# remove the two outlier participants from the sample
+# remove the outlier participants from the sample
 data_AW <- 
   data_AW %>% 
-  filter(!subj %in% outlier_meanRTs)
+  filter(!subj %in% outlier_meanRTs,
+         !subj %in% depth_difficulty_outliers)
 
 # summarise awareness test accuracy as a function of trial type and target depth
 data_gen_descriptives <- 

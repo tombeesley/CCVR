@@ -209,7 +209,7 @@ CCVR03_RT_avgs_figure +
 # ANOVA of RT from CCVR03, by trial type, target depth and epoch
 exp1_anova <- 
   CCVR03_data_RT_ANOVA %>% 
-  aov_car(meanRT ~ Error(subj/(TT*targ_depth*epoch)) + sub_exp, data = .)
+  aov_car(meanRT ~ sub_exp + Error(subj/(TT*targ_depth*epoch)), data = .)
 
 # simple main effect of trial type
 sme_TT <- 
@@ -239,6 +239,16 @@ sme_TT_td <-
   group_by(targ_depth) %>% 
   summarise(RT = round(mean(CC_effect),1),
             SD = round(sd(CC_effect),1))
+
+# Bayesian analysis of null interaction between TT and target depth
+bf_TT_td <- 
+  CCVR03_data_RT_ANOVA %>% 
+  group_by(subj, TT, targ_depth) %>% 
+  summarise(subjRT = mean(meanRT))
+
+bfRes <- anovaBF(subjRT ~ TT*targ_depth + subj,
+                 data = bf_TT_td,
+                 whichRandom = "subj")
 
 # CC effect overall 
 dataCC <- 
@@ -302,6 +312,8 @@ CC_effect_end_exp1 <-  pull(CC_effect[CC_effect$TT=="random", "RT"] - CC_effect[
 These data were subjected to a four-way repeated measures ANOVA, with a between-subject factor of *sub-experiment* (1a vs. 1b), and within-subject factors of *configuration type* (repeated vs. random), *target-depth* (near vs. far) and *epoch* (1 to 6). Where Mauchly's test of sphericity revealed violations, Greenhouse-Geisser corrections were made. There was no main effect of *sub-experiment*, `r apa(exp1_anova, effect = "sub_exp")` and the only significant interaction effect involving *sub-experiment* was the *sub-experiment* by *configuration type* by *epoch* interaction, `r apa(exp1_anova, effect = "sub_exp:TT:epoch")`, suggesting that the contextual cuing effect may have emerged at slightly different rates in the two procedures ^[The sample size for Experiment 1 was determined on the basis of detecting within-subjects differences in RT. We acknowledge that the between-subjects comparisons across the factor of sub-experiment may be underpowered.].
 
 There was a main effect of *configuration type*, `r apa(exp1_anova, effect = "TT", force_sph_corr = TRUE)`, with response times for repeated configurations (`r sme_TT[sme_TT$TT=="repeated","RT"]` ms, SD = `r sme_TT[sme_TT$TT=="repeated","SD"]`) faster than those for random configurations (`r sme_TT[sme_TT$TT=="random","RT"]` ms, SD = `r sme_TT[sme_TT$TT=="random","SD"]`). There was a main effect of *target-depth*, `r apa(exp1_anova, effect = "targ_depth", force_sph_corr = TRUE)`, with response times for far targets (`r sme_targ_depth[sme_targ_depth$targ_depth=="far","RT"]` ms, SD = `r sme_targ_depth[sme_targ_depth$targ_depth=="far","SD"]`) faster than those for near targets (`r sme_targ_depth[sme_targ_depth$targ_depth=="near","RT"]` ms, SD = `r sme_targ_depth[sme_targ_depth$targ_depth=="near","SD"]`). There was also a main effect of *epoch*, `r apa(exp1_anova, effect = "epoch")` with response times decreasing across the experiment. The *configuration type* by *target-depth* interaction was not significant, `r apa(exp1_anova, effect = "TT:targ_depth")`.  The *configuration type* by *epoch* interaction was significant, `r apa(exp1_anova, effect = "TT:epoch")`, as was the *target-depth by epoch* interaction, `r apa(exp1_anova, effect = "targ_depth:epoch", force_sph_corr = TRUE)`, suggesting that the RT decrease was more pronounced for configurations with distal targets. There were no other significant interaction effects.
+
+While there was a clear main effect of *configuration type*, the present data present some uncertainty as to whether this CC effect is modulated by the depth of the target (the *configuration type* by *target-depth* interaction). A Bayesian analysis of these data found that there was no confirmatory of evidence for the interaction effect, BF=`r bfRes[4]/bfRes[3]`. Thus the experiment was underpowered for detecting differences in the size of the contextual cuing effect across these conditions. 
 
 The overall CC effect (the main effect of *configuration type* from the ANOVA) resulted in a Cohen's *d~z~* = `r round(d_exp1_CC_all,2)`, with `r round(prop_positive_CC,0)`% of participants showing a positive CC effect. The CC effect was present in both configurations with near targets, `r t_exp1_CC_near`, and those with far targets, `r t_exp1_CC_far`.
 

@@ -68,14 +68,27 @@ library(pwr) # power calculations
 library(lsr) # effect size estimate
 library(skimr)
 library(rstudioapi)
+library(kableExtra)
 
+# function used to set rounding and presentation of decimals to specific length
 spec_dec <- function(x, k) trimws(format(round(x, k), nsmall=k)) # useful for controlling decimals
+
+# function to force scientific formatting of numbers (used for large BFs)
+changeSciNot <- function(n) {
+  output <- format(n, scientific = TRUE, digits = 2) #Transforms the number into scientific notation even if small
+  output <- sub("e", "x10^", output) #Replace e with 10^
+  output <- sub("\\+0?", "", output) #Remove + symbol and leading zeros on expoent, if > 1
+  output <- sub("-0?", "-", output) #Leaves - symbol but removes leading zeros on expoent, if < 1
+  output
+}
 
 # setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # set wd to current file location
 
 theme_set(theme_classic())
 
 r_refs("references.bib")
+
+a <-  1.234 * 10^36
 
 ```
 
@@ -326,7 +339,33 @@ The overall CC effect was somewhat weaker than the CC effect seen in some standa
 
 # Experiment 2
 
-Experiment 1 demonstrated significant CC for configurations paired with near and far targets. In Experiment 2 we sought to examine the role that depth plays in the formation of associations *within* a repeating configuration. For example, it could be that associations only form between distractors and targets co-occurring on the same surface. Experiment 2 addresses this question directly by selectively pairing distractor configurations at one of the two depths, with targets that are placed at one of the two depths. As such, for each repeating configuration of distractors, half of the distractors were repeated across presentations and the other half were randomly arranged. For some participants, the distractors on the proximal surface to the target repeated, while for other participants the distractors on the distal surface to the target repeated. By also manipulating the target depth (relative to the observer) across configurations, this produced orthogonal factors of target depth, and repeated distractor depth.
+Experiment 1 demonstrated significant CC for configurations paired with near and far targets. In Experiment 2 we sought to examine the role that depth plays in the formation of associations *within* a repeating configuration. The data from @zang2017 suggested that when the distractors at different depths were switched (near distractors placed further from the viewer; far distractors placed nearer), then the CC effect was retained. This generalisation of performance across these different depths suggests a flat, 2D representation of the context that possibly does not encode depth information. If this is true, we would expect to see equivalent strengths of cuing for distractors placed at different depths within a configuration. To test this, Experiment 2 selectively paired distractor configurations at one of the two depths, with targets that are placed at one of the two depths. As such, for each repeating configuration of distractors, half of the distractors were repeated across presentations and the other half were randomly arranged. For some participants, the distractors on the proximal surface to the target repeated, while for other participants the distractors on the distal surface to the target repeated. By also manipulating the target depth (relative to the observer) across configurations, this produced orthogonal factors of target depth, and repeated distractor depth.
+
+```{r Exp-2-design}
+
+
+table_1 = 
+  data.frame(
+  condition = c("Proximal-NT", "Proximal-FT", "Distal-NT", "Distal-FT"),
+  target = c("Near", "Far", "Near", "Far"),
+  rep_ds = c("Near", "Far", "Far", "Near"),
+  rand_ds = c("Far", "Near", "Near", "Far"))
+
+
+kable(table_1,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Condition", "Target position", "Repeated distractors", "Random distractors"),
+      align = c("l", "c", "c", "c"),
+      caption = "Types of repeated configurations in Experiment 2") %>% 
+  kable_styling(full_width = TRUE)
+
+# %>% 
+#   row_spec(row = 0, align = "c") %>%
+#   kable_styling(full_width = TRUE)
+
+```
+
 
 This design allowed us to test the strength of associations forming between distractors and targets (i.e., to test whether CC is greater when repeating distractors are positioned close to the target or far away from the target). We decided to manipulate the relationship between the repeating distractors and the target on a between-subjects basis in order to reduce the total number of configurations participants were exposed to (given the clear limitations on learning in standard CC designs, cf. @smyth2008). Thus participants were exposed to eight repeated configurations: four with the target placed on the near surface, and four with the target on the far surface (within each set, the target was placed once within each quadrant).
 
@@ -492,9 +531,9 @@ The data were subjected to a four-way mixed-model ANOVA with a between-subject f
 
 There was a significant interaction between *configuration type* and *test*, `r apa(exp2_anova, effect = "TT:test", force_sph_corr = TRUE)`, indicating that the difference in response times between repeated and random configurations increased across the three tests. There was no significant *configuration type* by *target-depth* interaction, `r apa(exp2_anova, effect = "TT:targ_depth")`, however there was a significant three-way interaction between *configuration type*, *target-depth*, and *test*, `r apa(exp2_anova, effect = "TT:targ_depth:test", force_sph_corr = TRUE)`. To explore this in more detail, we calculated a CC score, subtracting the response times for repeated configurations from those for random configurations, and plotted this score across the three tests as a factor of target-depth. These data are shown in Figure \@ref(fig:Exp2-CC-figure). As can be seen, the CC effect for configurations with targets on the far surface is fairly consistent across the three tests, whereas the CC effect for configurations with targets on the near surface is initially weaker, but is then stronger across tests 2 and 3. Post-hoc t-tests compared differences in CC for configurations with near and far targets at each of the three tests, revealing that the CC effect was different in Test 1, `r t_exp1_CC_T1`, and Test 3, `r t_exp1_CC_T3`, but not Test 2, `r t_exp1_CC_T2`. No other interaction effects were significant (Fs < 1.9).
 
-The above analysis suggests that the target-distractor contingency factor did not play a significant role in determining reaction times. To confirm this, a Bayesian ANOVA was conducted with factors of *configuration type*, *target-depth*, and *target-distractor contingency*. This revealed considerable support for a main effect of *configuration type*, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[2])$bf,1)`, and *target-depth*, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[5])$bf,1)`. In contrast, there was moderate support for the absence of an effect of *target-distractor contingency*, BF~10 = `r spec_dec(extractBF(exp_2_anova_BF_a[1])$bf,1)`. The model which produced the largest Bayes Factor was that containing only factors of *configuration type* and *target-depth* with no interaction effects, BF~10 = `r spec_dec(extractBF(exp_2_anova_BF_a[7])$bf,1)`, and there was support for the absence of an interaction between these two factors, BF~10 = `r spec_dec(extractBF(exp_2_anova_BF_a[13])$bf/extractBF(exp_2_anova_BF_a[7])$bf,1)`. We next explored the possible interaction effects involving *target-distractor contingency*. There was support for the absence of an interaction effect between *target-distractor contingency* and *configuration type*, BF~10 = `r spec_dec(extractBF(exp_2_anova_BF_a[4])$bf/extractBF(exp_2_anova_BF_a[3])$bf,1)`, and also between *target-distractor contingency* and *target-depth*, BF~10 = `r spec_dec(extractBF(exp_2_anova_BF_a[10])$bf/extractBF(exp_2_anova_BF_a[6])$bf,1)`. There was also support for the absence of a three-way interaction effect, BF~10 = `r spec_dec(extractBF(exp_2_anova_BF_a[18])$bf/extractBF(exp_2_anova_BF_a[17])$bf,1)`. 
+The above analysis suggests that the target-distractor contingency factor did not play a significant role in determining reaction times. To confirm this, a Bayesian ANOVA was conducted with factors of *configuration type*, *target-depth*, and *target-distractor contingency*. This revealed considerable support for a main effect of *configuration type*, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[2])$bf,1)`, and *target-depth*, BF~10~ = `r changeSciNot(extractBF(exp_2_anova_BF_a[5])$bf)`. In contrast, there was moderate support for the absence of an effect of *target-distractor contingency*, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[1])$bf,1)`. The model which produced the largest Bayes Factor was that containing only factors of *configuration type* and *target-depth* with no interaction effects, BF~10~ = `r changeSciNot(extractBF(exp_2_anova_BF_a[7])$bf)`, and there was support for the absence of an interaction between these two factors, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[13])$bf/extractBF(exp_2_anova_BF_a[7])$bf,1)`. We next explored the possible interaction effects involving *target-distractor contingency*. There was support for the absence of an interaction effect between *target-distractor contingency* and *configuration type*, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[4])$bf/extractBF(exp_2_anova_BF_a[3])$bf,1)`, and also between *target-distractor contingency* and *target-depth*, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[10])$bf/extractBF(exp_2_anova_BF_a[6])$bf,1)`. There was also support for the absence of a three-way interaction effect, BF~10~ = `r spec_dec(extractBF(exp_2_anova_BF_a[18])$bf/extractBF(exp_2_anova_BF_a[17])$bf,1)`. 
 
-An additional Bayesian ANOVA was run with factors of *configuration type*, *target-depth*, and *test* to explore the three-way interaction depicted in Figure \@ref(fig:Exp2-CC-figure), which was significant in the ANOVA reported earlier. This revealed a Bayes Factor for the interaction that did not amount to supporting evidence, BF~10 = `r  spec_dec(extractBF(exp_2_anova_BF_b[18])$bf/extractBF(exp_2_anova_BF_b[17])$bf,1)`. 
+An additional Bayesian ANOVA was run with factors of *configuration type*, *target-depth*, and *test* to explore the three-way interaction depicted in Figure \@ref(fig:Exp2-CC-figure), which was significant in the ANOVA reported earlier. This revealed a Bayes Factor for the interaction that did not amount to supporting evidence, BF~10~ = `r  spec_dec(extractBF(exp_2_anova_BF_b[18])$bf/extractBF(exp_2_anova_BF_b[17])$bf,1)`. 
 
 
 (ref:Exp2-CC-figure) CC effect across tests in Experiment 2, as a function of target-depth.

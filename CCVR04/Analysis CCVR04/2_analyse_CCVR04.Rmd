@@ -111,7 +111,7 @@ table_basic_resp_stats <-
 # and outlier RTs  
 data <- 
   dataMain %>% 
-  filter(num_additional_Rs<=1, dist_to_T>=0) %>% 
+  filter(num_additional_Rs<=2, dist_to_T>=0) %>% 
   group_by(subj) %>% 
   mutate(zRT = scale(RT)) %>% 
   filter(between(zRT,-2.5,2.5)) %>% 
@@ -183,8 +183,6 @@ data %>%
   group_by(targ_depth) %>% 
   summarise(meanProp = mean(prop))
 
-# clearly a difference in 1A but not in 1B
-
 # any unusual participants?
 
 depth_difficulty_measure <- 
@@ -197,8 +195,6 @@ depth_difficulty_measure <-
 depth_difficulty_measure %>% 
   ggplot(aes(discrepancy)) +
   geom_density()
-
-# it looks like participants in 1A had a much more difficult time with far targets
 
 # remove those with large discrepancy
 depth_difficulty_outliers <- 
@@ -502,6 +498,35 @@ data_gen_analysis <-
   data_AW %>% 
   group_by(subj, TT, targ_depth) %>% 
   summarise(acc = mean(dist_to_T))
+
+# look at the correlation of awareness with CC effect
+
+# summarise CC effect
+sub_CC <- 
+  test_diff %>% 
+  group_by(subj) %>% 
+  summarise(CC_RT = mean(CC_RT))
+
+#summarise awareness
+sub_Aware <- 
+  data_gen_analysis %>% 
+  group_by(subj,TT) %>% 
+  summarise(acc = mean(acc)) %>% 
+  pivot_wider(names_from = TT, values_from = acc) %>% 
+  mutate(CC_aware = Random - Repeated) %>% 
+  select(subj, CC_aware) %>% 
+  mutate(subj = as.factor(subj))
+
+# join and look at correlation
+c_data <- 
+  full_join(sub_CC, sub_Aware, by = "subj")
+
+# test correlation
+cor(c_data$CC_RT, c_data$CC_aware)
+correlationBF(c_data$CC_RT, c_data$CC_aware)
+
+awareness_cor_result <- cor.test(~ CC_RT + CC_aware, data = c_data, method = "pearson")
+
 ```
 
 
@@ -544,6 +569,7 @@ CCVR04_test_ego_figure = test_ego_figure
 CCVR04_data_awareness = data_gen_descriptives
 CCVR04_anova_awareness = anova_awareness
 CCVR04_BFanova_awareness = BFanova_awareness
+CCVR04_awareness_cor = awareness_cor_result
 
 #save these objects for manuscript
 save(CCVR04_demog_summary, 
@@ -560,6 +586,7 @@ save(CCVR04_demog_summary,
      CCVR04_data_awareness,
      CCVR04_anova_awareness,
      CCVR04_BFanova_awareness,
+     CCVR04_awareness_cor,
      file = "../../CCVR_ms_1/CCVR04_export.Rdata")
 
 ```

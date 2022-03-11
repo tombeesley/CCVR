@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2022.3.1)  9 MAR 2022 12:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2022.3.1)  11 MAR 2022 13:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1212,37 +1212,30 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 p/pdftex.map}
 
 ] [2] [3]
-<fig_Brady2007_SC.png, id=92, 705.38531pt x 412.54124pt>
+<fig_Brady2007_SC.png, id=128, 705.38531pt x 412.54124pt>
 File: fig_Brady2007_SC.png Graphic file (type png)
 <use fig_Brady2007_SC.png>
 Package pdftex.def Info: fig_Brady2007_SC.png  used on input line 207.
 (pdftex.def)             Requested size: 281.85852pt x 164.84361pt.
-[4] [5 <./fig_Brady2007_SC.png>] [6]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 232.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 232.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 232.
-[7]
+[4] [5 <./fig_Brady2007_SC.png>] [6] [7]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 2
 52.
 (c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [8]
-<VR_schematic.png, id=133, 418.56375pt x 389.95688pt>
+<VR_schematic.png, id=165, 418.56375pt x 389.95688pt>
 File: VR_schematic.png Graphic file (type png)
 <use VR_schematic.png>
 Package pdftex.def Info: VR_schematic.png  used on input line 260.
 (pdftex.def)             Requested size: 281.85411pt x 262.5907pt.
 [9 <./VR_schematic.png>]
-<fig_ExampleVR.png, id=141, 807.015pt x 463.7325pt>
+<fig_ExampleVR.png, id=173, 807.015pt x 463.7325pt>
 File: fig_ExampleVR.png Graphic file (type png)
 <use fig_ExampleVR.png>
 Package pdftex.def Info: fig_ExampleVR.png  used on input line 277.
 (pdftex.def)             Requested size: 281.8561pt x 161.96207pt.
-[10 <./fig_ExampleVR.png>] [11] [12]
-<CCVR_manuscript_files/figure-latex/Exp1-RT-figure-1.pdf, id=167, 469.755pt x 3
+[10 <./fig_ExampleVR.png>] [11] [12] [13]
+<CCVR_manuscript_files/figure-latex/Exp1-RT-figure-1.pdf, id=205, 469.755pt x 3
 25.215pt>
 File: CCVR_manuscript_files/figure-latex/Exp1-RT-figure-1.pdf Graphic file (typ
 e pdf)
@@ -1250,23 +1243,94 @@ e pdf)
 Package pdftex.def Info: CCVR_manuscript_files/figure-latex/Exp1-RT-figure-1.pd
 f  used on input line 329.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[13] [14 <./CCVR_manuscript_files/figure-latex/Exp1-RT-figure-1.pdf>] [15] [16]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10> on input line 336.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <7> on input line 336.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <5> on input line 336.
+[14 <./CCVR_manuscript_files/figure-latex/Exp1-RT-figure-1.pdf>] [15] [16] [17]
+[18] [19]
+<CCVR_manuscript_files/figure-latex/Exp2-RT-figure-1.pdf, id=260, 578.16pt x 57
+8.16pt>
+File: CCVR_manuscript_files/figure-latex/Exp2-RT-figure-1.pdf Graphic file (typ
+e pdf)
+<use CCVR_manuscript_files/figure-latex/Exp2-RT-figure-1.pdf>
+Package pdftex.def Info: CCVR_manuscript_files/figure-latex/Exp2-RT-figure-1.pd
+f  used on input line 412.
+(pdftex.def)             Requested size: 469.75385pt x 469.75385pt.
 
-! LaTeX Error: Environment tabu undefined.
+LaTeX Warning: Float too large for page by 2.29768pt on input line 417.
 
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.360 \begin{tabu}
-                   to \linewidth {>{\raggedright}X>{\centering}X>{\centering...
- 
+[20] [21 <./CCVR_manuscript_files/figure-latex/Exp2-RT-figure-1.pdf>]
+<CCVR_manuscript_files/figure-latex/Exp2-test-figure-1.pdf, id=286, 469.755pt x
+ 325.215pt>
+File: CCVR_manuscript_files/figure-latex/Exp2-test-figure-1.pdf Graphic file (t
+ype pdf)
+<use CCVR_manuscript_files/figure-latex/Exp2-test-figure-1.pdf>
+Package pdftex.def Info: CCVR_manuscript_files/figure-latex/Exp2-test-figure-1.
+pdf  used on input line 425.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[22 <./CCVR_manuscript_files/figure-latex/Exp2-test-figure-1.pdf>] [23]
+<CCVR_manuscript_files/figure-latex/Exp2-CC-figure-1.pdf, id=314, 469.755pt x 3
+25.215pt>
+File: CCVR_manuscript_files/figure-latex/Exp2-CC-figure-1.pdf Graphic file (typ
+e pdf)
+<use CCVR_manuscript_files/figure-latex/Exp2-CC-figure-1.pdf>
+Package pdftex.def Info: CCVR_manuscript_files/figure-latex/Exp2-CC-figure-1.pd
+f  used on input line 446.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[24]
+<CCVR_manuscript_files/figure-latex/Exp2-ego-figure-1.pdf, id=321, 469.755pt x 
+325.215pt>
+File: CCVR_manuscript_files/figure-latex/Exp2-ego-figure-1.pdf Graphic file (ty
+pe pdf)
+<use CCVR_manuscript_files/figure-latex/Exp2-ego-figure-1.pdf>
+Package pdftex.def Info: CCVR_manuscript_files/figure-latex/Exp2-ego-figure-1.p
+df  used on input line 462.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+[25 <./CCVR_manuscript_files/figure-latex/Exp2-CC-figure-1.pdf>]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 4
+71.
+(c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [26 <./CCVR_manuscript_files/figure-latex/Exp2-ego-figure-1.pdf>] [27] [28] [
+29] [30] [31] [32] [33] AED endfloat: Processing end Figures and Tables [34] (.
+/CCVR_manuscript.aux)
+Package rerunfilecheck Info: File `CCVR_manuscript.out' has not changed.
+(rerunfilecheck)             Checksum: 06DBA04F085D7F113D3D9022DFA4AB55;3038.
+ ) 
 Here is how much of TeX's memory you used:
- 26273 strings out of 480236
- 496567 string characters out of 5893969
- 777960 words of memory out of 5000000
- 43636 multiletter control sequences out of 15000+600000
- 562563 words of font info for 98 fonts, out of 8000000 for 9000
+ 26435 strings out of 480236
+ 500412 string characters out of 5893969
+ 780480 words of memory out of 5000000
+ 43730 multiletter control sequences out of 15000+600000
+ 562881 words of font info for 99 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 99i,11n,103p,1450b,481s stack positions out of 5000i,500n,10000p,200000b,80000s
-!  ==> Fatal error occurred, no output PDF file produced!
+ 99i,11n,103p,2100b,481s stack positions out of 5000i,500n,10000p,200000b,80000s
+{c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-e
+c.enc}{c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/
+lm-mathit.enc}{c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/d
+vips/lm/lm-rm.enc}{c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/e
+nc/dvips/lm/lm-ts1.enc}<c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fo
+nts/type1/public/lm/lmbx12.pfb><c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf
+-dist/fonts/type1/public/lm/lmbxi10.pfb><c:/Users/beesleyt/AppData/Roaming/Tiny
+TeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/beesleyt/AppData/Roam
+ing/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/beesleyt/AppDa
+ta/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/beesley
+t/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/
+beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/
+Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pf
+b><c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/l
+mri10.pfb><c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/pub
+lic/lm/lmri12.pfb><c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/fonts/t
+ype1/public/lm/lmri8.pfb><c:/Users/beesleyt/AppData/Roaming/TinyTeX/texmf-dist/
+fonts/type1/public/lm/lmss8.pfb><c:/Users/beesleyt/AppData/Roaming/TinyTeX/texm
+f-dist/fonts/type1/public/lm/lmtt12.pfb>
+Output written on CCVR_manuscript.pdf (34 pages, 775802 bytes).
+PDF statistics:
+ 523 PDF objects out of 1000 (max. 8388607)
+ 425 compressed objects within 5 object streams
+ 115 named destinations out of 1000 (max. 500000)
+ 245 words of extra memory for PDF output out of 10000 (max. 10000000)
+

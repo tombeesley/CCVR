@@ -1,0 +1,31 @@
+---
+title: "test_table"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(papaja)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+```
+
+```{r echo=FALSE}
+table_1 = 
+  data.frame(
+  condition = c("Proximal-NT", "Proximal-FT", "Distal-NT", "Distal-FT"),
+  target = c("Near", "Far", "Near", "Far"),
+  rep_ds = c("Near", "Far", "Far", "Near"),
+  rand_ds = c("Far", "Near", "Near", "Far"))
+
+
+kable(table_1,
+      format = "latex",
+      booktabs = TRUE,
+      col.names = c("Condition", "Target position", "Repeated distractors", "Random distractors"),
+      align = c("l", "c", "c", "c"),
+      caption = "Types of repeated configurations in Experiment 2") %>% 
+  kable_styling(full_width = TRUE) 
+```
+

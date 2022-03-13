@@ -253,8 +253,8 @@ RT_avgs_figure <-
         strip.text.x = element_text(hjust = 0.05),
         strip.background = element_blank(),
         panel.spacing.y = unit(2, "lines")) +
-  scale_y_continuous(limits = c(1400, 3000),
-                     breaks = seq(1400,3000,200)) +
+  scale_y_continuous(limits = c(1400, 3200),
+                     breaks = seq(1400,3200,200)) +
   scale_x_continuous(breaks = seq(1,31,4),
                      minor_breaks = seq(1,31,2)) +
   scale_fill_manual(name  = "",

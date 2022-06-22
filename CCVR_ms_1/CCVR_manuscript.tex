@@ -1,15 +1,14 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
-\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  english,
   man,floatsintext]{apa7}
 \usepackage{amsmath,amssymb}
 \usepackage{lmodern}
-\usepackage{ifxetex,ifluatex}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+\usepackage{iftex}
+\ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
@@ -43,10 +42,10 @@
   pdflang={en-EN},
   pdfkeywords={Visual search, contextual cuing, depth, virtual reality},
   colorlinks=true,
-  linkcolor=Maroon,
-  filecolor=Maroon,
-  citecolor=Blue,
-  urlcolor=blue,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={blue},
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage{graphicx}
@@ -75,6 +74,38 @@
   \let\oldsubparagraph\subparagraph
   \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+\babelprovide[main,import]{english}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
 % Manuscript styling
 \usepackage{upgreek}
 \captionsetup{font=singlespacing,justification=justified}
@@ -90,9 +121,9 @@
 
 % Create new environments so endfloat can handle them
 % \newenvironment{ltable}
-%   {\begin{landscape}\begin{center}\begin{threeparttable}}
-%   {\end{threeparttable}\end{center}\end{landscape}}
-\newenvironment{lltable}{\begin{landscape}\begin{center}\begin{ThreePartTable}}{\end{ThreePartTable}\end{center}\end{landscape}}
+%   {\begin{landscape}\centering\begin{threeparttable}}
+%   {\end{threeparttable}\end{landscape}}
+\newenvironment{lltable}{\begin{landscape}\centering\begin{ThreePartTable}}{\end{ThreePartTable}\end{landscape}}
 
 % Enables adjusting longtable caption width to table width
 % Solution found at http://golatex.de/longtable-mit-caption-so-breit-wie-die-tabelle-t15767.html
@@ -105,6 +136,20 @@
 % \setlength{\parindent}{0.5in}
 % \setlength{\parskip}{0pt plus 0pt minus 0pt}
 
+% Overwrite redefinition of paragraph and subparagraph by the default LaTeX template
+% See https://github.com/crsh/papaja/issues/292
+\makeatletter
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\parindent}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries\itshape\typesectitle}}
+
+\renewcommand{\subparagraph}[1]{\@startsection{subparagraph}{5}{1em}%
+  {0\baselineskip \@plus 0.2ex \@minus 0.2ex}%
+  {-\z@\relax}%
+  {\normalfont\normalsize\itshape\hspace{\parindent}{#1}\textit{\addperi}}{\relax}}
+\makeatother
+
 % \usepackage{etoolbox}
 \makeatletter
 \patchcmd{\HyOrg@maketitle}
@@ -116,7 +161,15 @@
   {\section*{\protect\normalfont{\@title}}}
   {}{\typeout{Failed to patch title.}}
 \makeatother
-\shorttitle{Depth, VR and contextual cuing}
+
+\usepackage{xpatch}
+\makeatletter
+\xapptocmd\appendix
+  {\xapptocmd\section
+    {\addcontentsline{toc}{section}{\appendixname\ifoneappendix\else~\theappendix\fi\\: #1}}
+    {}{\InnerPatchFailed}%
+  }
+{}{\PatchFailed}
 \keywords{Visual search, contextual cuing, depth, virtual reality\newline\indent Word count: 7971}
 \DeclareDelayedFloatFlavor{ThreePartTable}{table}
 \DeclareDelayedFloatFlavor{lltable}{table}
@@ -130,44 +183,16 @@
 \usepackage{csquotes}
 \raggedbottom
 \usepackage[font={small,it}, labelfont={bf}]{caption}
-\ifxetex
-  % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
-  \usepackage{polyglossia}
-  \setmainlanguage[]{english}
-\else
-  \usepackage[main=english]{babel}
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
-\fi
-\ifluatex
+\ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\newlength{\cslhangindent}
-\setlength{\cslhangindent}{1.5em}
-\newlength{\csllabelwidth}
-\setlength{\csllabelwidth}{3em}
-\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
- {% don't indent paragraphs
-  \setlength{\parindent}{0pt}
-  % turn on hanging indent if param 1 is 1
-  \ifodd #1 \everypar{\setlength{\hangindent}{\cslhangindent}}\ignorespaces\fi
-  % set entry spacing
-  \ifnum #2 > 0
-  \setlength{\parskip}{#2\baselineskip}
-  \fi
- }%
- {}
-\usepackage{calc}
-\newcommand{\CSLBlock}[1]{#1\hfill\break}
-\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
-\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
-\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \title{Examining the role of depth information in contextual cuing using a virtual reality visual search task}
 \author{Tom Beesley\textsuperscript{1}, Ying Yun Tou\textsuperscript{2}, \& Jack Walsh\textsuperscript{2}}
 \date{}
 
+
+\shorttitle{Depth, VR and contextual cuing}
 
 \authornote{
 
@@ -183,7 +208,7 @@ Correspondence concerning this article should be addressed to Tom Beesley, Depar
 
 \affiliation{\vspace{0.5cm}\textsuperscript{1} Lancaster University, UK\\\textsuperscript{2} UNSW Sydney, Australia}
 
-\abstract{
+\abstract{%
 Two experiments examined the role that depth plays in the formation of associations during contextual cuing of visual search. Current associative models make predictions about the spatial constraints placed on learning within two-dimensional procedures, but there exists very little evidence of how these predictions translate to three-dimensional space. A virtual reality procedure was used to project the stimuli in three-dimensions. Experiment 1 established a contextual cuing effect using this procedure, while Experiment 2 examined whether the relative distance between repeated distractors and the target, or the position of the distractors relative to the observer modulated contextual cuing. It was found that the contextual cuing effect was consistent across these different conditions. As a result, there was no evidence to suggest that depth information forms a significant part of the representations that form during contextual cuing. These data are therefore broadly consistent with the mechanisms of current associative models of contextual cuing.
 
 Public significance statement: This study provides a test of the way in which visual scenes are processed and learnt about across three-dimensional space. Current models of this behaviour only consider learning in two-dimensional space. The current work therefore provides important insights into how depth information contributes to the memory representations of familiar scenes.
@@ -194,7 +219,7 @@ Public significance statement: This study provides a test of the way in which vi
 \begin{document}
 \maketitle
 
-Visual search through the environment is guided by stored representations of our past experience. Within the laboratory setting, the power of this cognitive process is perhaps best demonstrated by studies of ``contextual cuing'' (Chun \& Jiang, 1998, hereafter {``CC''}). In a typical task, participants have to locate a target amongst a set of distractors as quickly as possible while maintaining high accuracy. Unbeknownst to participants, some of these visual search displays are repeated across trials of the experiment, such that some trials contain ``repeated configurations,'' and others ``random configurations.'' A CC effect is shown by faster reaction times to repeated configurations compared to random configurations, an effect which emerges quickly in the task, and is robust and observed in the majority of participants, with an effect size typically above \emph{d\textsubscript{z}} = 1 (Vadillo et al., 2016). Some have claimed that the CC effect is the result of an implicit learning system, which does not yield consciously accessible memories of repeated configurations (e.g., Colagiuri \& Livesey, 2016), though this continues to be the subject of debate (e.g., Kroell et al., 2019; Vadillo et al., 2016).
+Visual search through the environment is guided by stored representations of our past experience. Within the laboratory setting, the power of this cognitive process is perhaps best demonstrated by studies of ``contextual cuing'' (Chun \& Jiang, 1998, hereafter ``CC''). In a typical task, participants have to locate a target amongst a set of distractors as quickly as possible while maintaining high accuracy. Unbeknownst to participants, some of these visual search displays are repeated across trials of the experiment, such that some trials contain ``repeated configurations'', and others ``random configurations''. A CC effect is shown by faster reaction times to repeated configurations compared to random configurations, an effect which emerges quickly in the task, and is robust and observed in the majority of participants, with an effect size typically above \emph{d\textsubscript{z}} = 1 (Vadillo et al., 2016). Some have claimed that the CC effect is the result of an implicit learning system, which does not yield consciously accessible memories of repeated configurations (e.g., Colagiuri \& Livesey, 2016), though this continues to be the subject of debate (e.g., Kroell et al., 2019; Vadillo et al., 2016).
 
 The CC effect fits a clear associative framework for memory representation. Participants learn to associate the repeating configurations of distractors with the location of the target, such that the perception of the configuration of distractors (or at least a sample of the configuration) triggers a learnt behavioural response, likely to be primarily an earlier ceasing of random search behaviour and a shift of attention towards the target location (Beesley et al., 2018). Brady and Chun (2007)'s associative model provided an important first step in formalising the representational theory of CC. The model is based on a simple two-layer connectionist network, with input units reflecting the spatial representation of present stimuli (candidate targets) in the visual field, and output units reflecting the expectation for a target in each of these positions. Simple error-correction learning mechanisms drive the formation of associations between the input units for present (distractor) stimuli and the output unit representing the target position. These associations form in the case of repeated configurations but not random configurations, and so the model easily provides a simulation of the CC effect.
 
@@ -249,7 +274,7 @@ Twenty-five undergraduate psychology students (mean age = 19.44, SD = 2.02; 19 i
 \hypertarget{materials.}{%
 \subsubsection{Materials.}\label{materials.}}
 
-An Oculus Rift CV1 headset (Oculus VR), connected to a PC with a NVIDIA GeForce GTX 970 graphics card, delivered the experiment in VR. The Oculus Rift CV1 is a head-mounted display that utilises a stereoscopic OLED display with 2160 x 1200 resolution (1080 x 1200 per eye) at a refresh rate of 90 Hz. Within the headset, images on the computer undergo transformations through two convex hybrid Frensel lenses, warping images and extending the environment to a wide 110° field of view. The headset has a dial that adjusts the separation of the lenses to accommodate for the varying interpupillary distances across participants. Two external infrared tracking sensors were used to track the headset and position the user in 3D space. The experiment was programmed in the Unity engine, which created all the stimulus properties, controlled timing and recorded responses. All dimensions of the program were measured in ``Unity units.'' The spacebar was used for indicating the detection of the target.
+An Oculus Rift CV1 headset (Oculus VR), connected to a PC with a NVIDIA GeForce GTX 970 graphics card, delivered the experiment in VR. The Oculus Rift CV1 is a head-mounted display that utilises a stereoscopic OLED display with 2160 x 1200 resolution (1080 x 1200 per eye) at a refresh rate of 90 Hz. Within the headset, images on the computer undergo transformations through two convex hybrid Frensel lenses, warping images and extending the environment to a wide 110° field of view. The headset has a dial that adjusts the separation of the lenses to accommodate for the varying interpupillary distances across participants. Two external infrared tracking sensors were used to track the headset and position the user in 3D space. The experiment was programmed in the Unity engine, which created all the stimulus properties, controlled timing and recorded responses. All dimensions of the program were measured in ``Unity units''. The spacebar was used for indicating the detection of the target.
 
 The VR environment depicted an empty room with grey walls where the viewer was situated in the middle of the room. The program allows objects to be placed on any of nine concave surfaces, which radiated from the observer at the origin point (see Figure \ref{fig:schematic}). Two of these surfaces were selected for the two depths (near and far) used in the task. Objects on each surface were approximately equidistant from the observer. Each surface represented an increment of 2 units from the observer.
 
@@ -291,7 +316,7 @@ Each configuration comprised 16 cylinder-shaped distractors, which were equally 
 \hypertarget{procedure}{%
 \subsubsection{Procedure}\label{procedure}}
 
-Participants were given 10 practice trials to familiarize themselves with the task. This provided participants with a guide as to how they should direct their head position towards the centre of the target object, prior to responding with the spacebar. Participants were told to search for a ``pill-shaped target'' and to press the spacebar once the central blue circle region was over the target object. This provided a guide to how the program would register accurate target detection. The blue circle was used for training only and not presented in the main phase of the experiment. After a successful detection of the target, the white fixation circle appeared. The program detected the gaze on this fixation circle before initiating the next trial.
+Participants were given 10 practice trials to familiarize themselves with the task. This provided participants with a guide as to how they should direct their head position towards the centre of the target object, prior to responding with the spacebar. Participants were told to search for a ``pill-shaped target'' and to press the spacebar once the central blue circle region was over the target object \footnote{It should be noted that the use of a single response key for target detection deviates from the majority of the work on contextual cuing that used two response keys (e.g., left/right); it is possible that this has some consequence for the operation of response related processes that contribute to the contextual cuing effect (add refs here)}. This provided a guide to how the program would register accurate target detection. The blue circle was used for training only and not presented in the main phase of the experiment. After a successful detection of the target, the white fixation circle appeared. The program detected the gaze on this fixation circle before initiating the next trial.
 
 The main task consisted of 480 trials, divided into 30 blocks (16 trials per block). Each block contained four trials from each of four different configuration sets. Within each set, and within each block, targets were equally distributed across the four quadrants of the x/y plane. The order of trials within each block was randomised, with the constraint that the target could not occupy the same location across consecutive trials. Participants were given breaks every 160 trials (at the end of every 10 blocks) and breaks lasted until participants wished to resume.
 
@@ -333,11 +358,11 @@ Within-subject error bars were computed by a process of normalising the RT data 
 \caption{RT data for Experiment 1A and 1B. Circles reflect trials with near targets (T) and squares those with far targets. White symbols are used for trials with distractors that are entirely randomised, while black symbols are those trials with repeating distractors.}\label{fig:Exp1-RT-figure}
 \end{figure}
 
-These data were subjected to a four-way repeated measures ANOVA, using the \emph{afex::aov\_car()} function, which included a between-subject factor of \emph{sub-experiment} (1a vs.~1b), and within-subject factors of \emph{configuration type} (repeated vs.~random), \emph{target-depth} (near vs.~far) and \emph{epoch} (1 to 6). Where Mauchly's test of sphericity revealed violations, Greenhouse-Geisser corrections were made. There was no main effect of \emph{sub-experiment}, \emph{F}(1, 35) = 0.07, \emph{p} = .800, \(\eta^2_p\) \textless{} .01 and the only significant interaction effect involving \emph{sub-experiment} was the \emph{sub-experiment} by \emph{configuration type} by \emph{epoch} interaction, \emph{F}(3.78, 132.16) = 2.76, \emph{p} = .033, \(\eta^2_p\) = .07, suggesting that the contextual cuing effect may have emerged at slightly different rates in the two procedures.\footnote{The sample size for Experiment 1 was determined on the basis of detecting within-subjects differences in RT. We acknowledge that the between-subjects comparisons across the factor of sub-experiment may be underpowered.}
+These data were subjected to a four-way repeated measures ANOVA, using the \emph{afex::aov\_car()} function, which included a between-subject factor of \emph{sub-experiment} (1a vs.~1b), and within-subject factors of \emph{configuration type} (repeated vs.~random), \emph{target-depth} (near vs.~far) and \emph{epoch} (1 to 6). Where Mauchly's test of sphericity revealed violations, Greenhouse-Geisser corrections were made. There was no main effect of \emph{sub-experiment}, \emph{F}(1, 35) = 0.07, \emph{p} = .800, \(\eta^2_p\) \textless{} .01 and the only significant interaction effect involving \emph{sub-experiment} was the \emph{sub-experiment} by \emph{configuration type} by \emph{epoch} interaction, \emph{F}(3.78, 132.16) = 2.76, \emph{p} = .033, \(\eta^2_p\) = .07, suggesting that the contextual cuing effect may have emerged at slightly different rates in the two procedures \footnote{The sample size for Experiment 1 was determined on the basis of detecting within-subjects differences in RT. We acknowledge that the between-subjects comparisons across the factor of sub-experiment may be underpowered.}.
 
 There was a main effect of \emph{configuration type}, \emph{F}(1, 35) = 15.58, \emph{p} \textless{} .001, \(\eta^2_p\) = .31, with response times for repeated configurations (2220.6 ms, SD = 379) faster than those for random configurations (2323.7 ms, SD = 380). There was a main effect of \emph{target-depth}, \emph{F}(1, 35) = 80.12, \emph{p} \textless{} .001, \(\eta^2_p\) = .70, with response times for far targets (2076.6 ms, SD = 384.5) faster than those for near targets (2467.8 ms, SD = 402.8). There was also a main effect of \emph{epoch}, \emph{F}(3.50, 122.46) = 69.44, \emph{p} \textless{} .001, \(\eta^2_p\) = .66 with response times decreasing across the experiment. The \emph{configuration type} by \emph{target-depth} interaction was not significant, \emph{F}(1, 35) = 3.23, \emph{p} = .081, \(\eta^2_p\) = .08. The \emph{configuration type} by \emph{epoch} interaction was significant, \emph{F}(3.78, 132.16) = 4.73, \emph{p} = .002, \(\eta^2_p\) = .12, as was the \emph{target-depth by epoch} interaction, \emph{F}(3.98, 139.39) = 3.84, \emph{p} = .006, \(\eta^2_p\) = .10, suggesting that the RT decrease was more pronounced for configurations with far targets. There were no other significant interaction effects.
 
-While there was a clear main effect of \emph{configuration type}, the present data present some uncertainty as to whether this CC effect is modulated by the depth of the target (the \emph{configuration type} by \emph{target-depth} interaction). A Bayesian ANOVA was conducted, using the \emph{BayesFactor::anovaBF()} function (priors were set at the default ``medium'' width). This found that there was no confirmatory evidence for the absence of an interaction effect, BF=0.40 (a value of 0.33 would reflect moderate support for the null, Dienes, 2014). Thus the experiment was somewhat underpowered for detecting differences in the size of the contextual cuing effect across these conditions.
+While there was a clear main effect of \emph{configuration type}, the present data present some uncertainty as to whether this CC effect is modulated by the depth of the target (the \emph{configuration type} by \emph{target-depth} interaction). A Bayesian ANOVA was conducted, using the \emph{BayesFactor::anovaBF()} function (priors were set at the default ``medium'' width). This found that there was no confirmatory evidence for the absence of an interaction effect, BF=0.50 (a value of 0.33 would reflect moderate support for the null, Dienes, 2014). Thus the experiment was somewhat underpowered for detecting differences in the size of the contextual cuing effect across these conditions.
 
 The overall CC effect (the main effect of \emph{configuration type} from the ANOVA) resulted in a Cohen's \emph{d\textsubscript{z}} = 0.66, with 78\% of participants showing a positive CC effect. The CC effect was present in both configurations with near targets, \emph{t}(36) = 2.08, \emph{p} = .045, \emph{d\textsubscript{z}} = 0.34, and those with far targets, \emph{t}(36) = 3.76, \emph{p} \textless{} .001, \emph{d\textsubscript{z}} = 0.62.
 
@@ -383,7 +408,7 @@ We also included an ``awareness test'' at the end of the experiment. Participant
 \hypertarget{participants.-2}{%
 \subsubsection{Participants.}\label{participants.-2}}
 
-Sixty-eight participants (mean age = 19.32, SD = 2.33; 20 participants identified as male and 48 as female) from UNSW Sydney took part in the study in exchange for AUS\$15. Participants were randomly allocated to one of the two target-distractor contingency conditions, ``proximal'' and ``distal.'' 34 participants were allocated to each condition. One participant from each condition was excluded from further analysis on the basis of their mean RT (see below). Five participants were excluded from the final analysis (see below for details).
+Sixty-eight participants (mean age = 19.32, SD = 2.33; 20 participants identified as male and 48 as female) from UNSW Sydney took part in the study in exchange for AUS\$15. Participants were randomly allocated to one of the two target-distractor contingency conditions, ``proximal'' and ``distal''. 34 participants were allocated to each condition. One participant from each condition was excluded from further analysis on the basis of their mean RT (see below). Five participants were excluded from the final analysis (see below for details).
 
 All other aspects of participant recruitment, exclusions and requirements were identical to Experiment 1a and 1b.
 
@@ -394,7 +419,7 @@ The materials used were the same as those used in Experiment 1b, with the except
 
 A mixed-model design was used, with a between-subject factor of \emph{target-distractor contingency} (proximal vs.~distal), and within-subject factors of \emph{configuration type} (repeated vs.~random), \emph{target-depth} (near vs.~far) and \emph{epoch} (31 epochs, each comprising 2 blocks).
 
-Configurations were created in the same manner as for Experiment 1a and 1b, except that the sets of repeated configurations contained repeating distractors on only one surface. Each presentation of one of these repeating configurations contained a novel random configuration of distractors on the ``non-repeating surface.''
+Configurations were created in the same manner as for Experiment 1a and 1b, except that the sets of repeated configurations contained repeating distractors on only one surface. Each presentation of one of these repeating configurations contained a novel random configuration of distractors on the ``non-repeating surface''.
 
 The procedure was the same as that used in Experiment 1b, with the exception that random configurations were only presented in epochs 9, 10, 19, 20, 29, and 30, and repeated configurations were not presented in these 6 epochs.
 
@@ -435,11 +460,11 @@ The data were subjected to a four-way mixed-model ANOVA with a between-subject f
 
 There was a significant interaction between \emph{configuration type} and \emph{test}, \emph{F}(1.86, 113.48) = 6.01, \emph{p} = .004, \(\eta^2_p\) = .09, indicating that the difference in response times between repeated and random configurations increased across the three tests. There was no significant \emph{configuration type} by \emph{target-depth} interaction, \emph{F}(1, 61) = 1.41, \emph{p} = .239, \(\eta^2_p\) = .02, however there was a significant three-way interaction between \emph{configuration type}, \emph{target-depth}, and \emph{test}, \emph{F}(1.91, 116.69) = 8.88, \emph{p} \textless{} .001, \(\eta^2_p\) = .13. Post-hoc t-tests compared differences in CC (RT to random configurations minus RT to repeated configurations) for configurations with near and far targets at each of the three tests. In Test 1, the CC effect was greater for configurations with far targets compared to configurations with near targets, \emph{t}(62) = -2.12, \emph{p} = .038, \emph{d\textsubscript{z}} = -0.27. There was no difference in the CC effect in Test 2, \emph{t}(62) = 1.79, \emph{p} = .078, \emph{d\textsubscript{z}} = 0.23, but by Test 3 the difference in the size of the CC effect had reversed, with a greater CC effect observed for configurations paired with near targets compared to those paired with far targets, \emph{t}(62) = 3.00, \emph{p} = .004, \emph{d\textsubscript{z}} = 0.38. It should be noted that this interaction effect was not supported in the results of the Bayesian analysis, reported below. No other interaction effects were significant (Fs \textless{} 1.9).
 
-The ANOVA results suggest that the \emph{target-distractor contingency} factor did not play a significant role in determining reaction times. To confirm this, a Bayesian ANOVA (priors were set at the default ``medium'' width) was conducted with factors of \emph{configuration type}, \emph{target-depth}, and \emph{target-distractor contingency}. The model which produced the largest Bayes Factor was that containing only factors of \emph{configuration type} and \emph{target-depth} with no interaction effects, BF\textsubscript{10} = 2.8x10\^{}82. The comparison of this model with that containing an interaction between these two factors revealed support for the null, BF = 0.2. Considering each of the models containing only an individual factor, there was considerable support for the model containing just \emph{configuration type}, BF\textsubscript{10} = 93.2, and for the model containing just \emph{target-depth}, BF\textsubscript{10} = 2.1x10\^{}78. In contrast, there was moderate support for the null when considering the model containing just the factor of \emph{target-distractor contingency}, BF\textsubscript{10} = 0.2.
+The ANOVA results suggest that the \emph{target-distractor contingency} factor did not play a significant role in determining reaction times. To confirm this, a Bayesian ANOVA (priors were set at the default ``medium'' width) was conducted with factors of \emph{configuration type}, \emph{target-depth}, and \emph{target-distractor contingency}. The model which produced the largest Bayes Factor was that containing only factors of \emph{configuration type} and \emph{target-depth} with no interaction effects, BF\textsubscript{10} = 2.9x10\^{}82. The comparison of this model with that containing an interaction between these two factors revealed support for the null, BF = 0.2. Considering each of the models containing only an individual factor, there was considerable support for the model containing just \emph{configuration type}, BF\textsubscript{10} = 102.4, and for the model containing just \emph{target-depth}, BF\textsubscript{10} = 2x10\^{}78. In contrast, there was moderate support for the null when considering the model containing just the factor of \emph{target-distractor contingency}, BF\textsubscript{10} = 0.2.
 
-We next explored the possible interaction effects involving \emph{target-distractor contingency} (i.e., a comparison of the model with the interaction to the model without the interaction). There was support for the absence of an interaction effect between \emph{target-distractor contingency} and \emph{configuration type}, BF = 0.2, and also between \emph{target-distractor contingency} and \emph{target-depth}, BF = 0.1. There was also support for the absence of a three-way interaction effect, BF = 0.2.
+We next explored the possible interaction effects involving \emph{target-distractor contingency} (i.e., a comparison of the model with the interaction to the model without the interaction). There was support for the absence of an interaction effect between \emph{target-distractor contingency} and \emph{configuration type}, BF = 0.1, and also between \emph{target-distractor contingency} and \emph{target-depth}, BF = 0.1. There was also support for the absence of a three-way interaction effect, BF = 0.1.
 
-An additional Bayesian ANOVA (priors were set at the default ``medium'' width) was run with factors of \emph{configuration type}, \emph{target-depth}, and \emph{test} to explore the three-way interaction that was significant in the ANOVA reported earlier. This revealed a Bayes Factor for the interaction that did not amount to supporting evidence, BF = 3.1.
+An additional Bayesian ANOVA (priors were set at the default ``medium'' width) was run with factors of \emph{configuration type}, \emph{target-depth}, and \emph{test} to explore the three-way interaction that was significant in the ANOVA reported earlier. This revealed a Bayes Factor for the interaction that did not amount to supporting evidence, BF = 2.7.
 
 \hypertarget{analysing-the-egocentricity-of-learning}{%
 \subsubsection{Analysing the egocentricity of learning}\label{analysing-the-egocentricity-of-learning}}
@@ -462,7 +487,7 @@ These data were subjected to a three-way repeated-measures ANOVA with factors of
 \hypertarget{awareness-test}{%
 \subsubsection{Awareness test}\label{awareness-test}}
 
-For the awareness test, participants error scores (Euclidean distance on the x/y plane, between the correct target position and central head position in ``Unity units'') on configurations with far targets was 4.50 (SD = 2.73) for repeated configurations, and 4.55 (SD = 2.75) for random configurations, while for near targets it was 3.11 (SD = 1.81) for repeated configurations, and 3.35 (SD = 1.78) for random configurations. These data were subjected to a two-way ANOVA with factors of \emph{configuration} and \emph{target-depth}, which revealed a main effect of target-depth \emph{F}(1, 62) = 150.20, \emph{p} \textless{} .001, \(\eta^2_p\) = .71,\footnote{The main effect of target-depth is due to the relative distances between the objects on the near surface being shorter than those on the far surface. Therefore any given decision made will be more likely to be closer to the actual target position for near surface targets} but no main effect of configuration, \emph{F}(1, 62) = 1.78, \emph{p} = .187, \(\eta^2_p\) = .03 and no interaction, \emph{F}(1, 62) = 0.65, \emph{p} = .423, \(\eta^2_p\) = .01. A Bayesian ANOVA revealed a Bayes Factor of 0.22 for the model containing only the configuration factor, suggesting reasonable support for the null model. We examined whether the size of the CC effect (RT to random configurations minus RT to repeated configurations, averaged across the three tests) was correlated with the awareness performance (error scores on random configurations minus error scores on repeated configurations). There was no evidence to suggest these scores were positively correlated, \emph{r}(61) = .03, \emph{p} = .811 (though see Vadillo et al., 2021 for a discussion of the pitfalls of such approaches to assessing awareness).
+For the awareness test, participants error scores (Euclidean distance on the x/y plane, between the correct target position and central head position in ``Unity units'') on configurations with far targets was 4.50 (SD = 2.73) for repeated configurations, and 4.55 (SD = 2.75) for random configurations, while for near targets it was 3.11 (SD = 1.81) for repeated configurations, and 3.35 (SD = 1.78) for random configurations. These data were subjected to a two-way ANOVA with factors of \emph{configuration} and \emph{target-depth}, which revealed a main effect of target-depth \emph{F}(1, 62) = 150.20, \emph{p} \textless{} .001, \(\eta^2_p\) = .71 \footnote{The main effect of target-depth is due to the relative distances between the objects on the near surface being shorter than those on the far surface. Therefore any given decision made will be more likely to be closer to the actual target position for near surface targets}, but no main effect of configuration, \emph{F}(1, 62) = 1.78, \emph{p} = .187, \(\eta^2_p\) = .03 and no interaction, \emph{F}(1, 62) = 0.65, \emph{p} = .423, \(\eta^2_p\) = .01. A Bayesian ANOVA revealed a Bayes Factor of 0.23 for the model containing only the configuration factor, suggesting reasonable support for the null model. We examined whether the size of the CC effect (RT to random configurations minus RT to repeated configurations, averaged across the three tests) was correlated with the awareness performance (error scores on random configurations minus error scores on repeated configurations). There was no evidence to suggest these scores were positively correlated, \emph{r}(61) = .03, \emph{p} = .811 (though see Vadillo et al., 2021 for a discussion of the pitfalls of such approaches to assessing awareness).
 
 \hypertarget{discussion-1}{%
 \subsection{Discussion}\label{discussion-1}}
@@ -496,61 +521,61 @@ Our tasks demonstrate the great potential VR procedures have for expanding the r
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
-\leavevmode\hypertarget{ref-beesley2018}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-beesley2018}{}}%
 Beesley, T., Hanafi, G., Vadillo, M. A., Shanks, David. R., \& Livesey, E. J. (2018). Overt attention in contextual cuing of visual search is driven by the attentional set, but not by the predictiveness of distractors. \emph{Journal of Experimental Psychology: Learning, Memory, and Cognition}, \emph{44}(5), 707--721. \url{https://doi.org/10.1037/xlm0000467}
 
-\leavevmode\hypertarget{ref-beesley2015b}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-beesley2015b}{}}%
 Beesley, T., Vadillo, M. A., Pearson, D., \& Shanks, D. R. (2015). Pre-exposure of repeated search configurations facilitates subsequent contextual cuing of visual search. \emph{Journal of Experimental Psychology: Learning, Memory, and Cognition}, \emph{41}(2), 348--362. \url{https://doi.org/10.1037/xlm0000033}
 
-\leavevmode\hypertarget{ref-beesley2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-beesley2016}{}}%
 Beesley, T., Vadillo, M. A., Pearson, D., \& Shanks, D. R. (2016). Configural learning in contextual cuing of visual search. \emph{Journal of Experimental Psychology: Human Perception and Performance}, \emph{42}(8), 1173--1185. \url{https://doi.org/10.1037/xhp0000185}
 
-\leavevmode\hypertarget{ref-brady2007}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-brady2007}{}}%
 Brady, T. F., \& Chun, M. M. (2007). Spatial constraints on learning in visual search: {Modeling} contextual cuing. \emph{Journal of Experimental Psychology: Human Perception and Performance}, \emph{33}(4), 798--815. \url{https://doi.org/10.1037/0096-1523.33.4.798}
 
-\leavevmode\hypertarget{ref-chun1998}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-chun1998}{}}%
 Chun, M. M., \& Jiang, Y. (1998). Contextual {Cueing}: {Implicit Learning} and {Memory} of {Visual Context Guides Spatial Attention}. \emph{Cognitive Psychology}, \emph{36}(1), 28--71. \url{https://doi.org/10.1006/cogp.1998.0681}
 
-\leavevmode\hypertarget{ref-colagiuri2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-colagiuri2016}{}}%
 Colagiuri, B., \& Livesey, E. J. (2016). Contextual cuing as a form of nonconscious learning: {Theoretical} and empirical analysis in large and very large samples. \emph{Psychonomic Bulletin \& Review}, \emph{23}(6), 1996--2009. \url{https://doi.org/10.3758/s13423-016-1063-0}
 
-\leavevmode\hypertarget{ref-cousineau2005}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-cousineau2005}{}}%
 Cousineau, D. (2005). Confidence intervals in within-subject designs: {A} simpler solution to {Loftus} and {Masson}'s method. \emph{Tutorials in Quantitative Methods for Psychology}, \emph{1}(1), 42--45. \url{https://doi.org/10.20982/tqmp.01.1.p042}
 
-\leavevmode\hypertarget{ref-dienes2014}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-dienes2014}{}}%
 Dienes, Z. (2014). Using {Bayes} to get the most out of non-significant results. \emph{Frontiers in Psychology}, \emph{5}. \url{https://www.frontiersin.org/article/10.3389/fpsyg.2014.00781}
 
-\leavevmode\hypertarget{ref-kawahara2003}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kawahara2003}{}}%
 Kawahara, J. (2003). Contextual cueing in {3D} layouts defined by binocular disparity. \emph{Visual Cognition}, \emph{10}(7), 837--852. \url{https://doi.org/10.1080/13506280344000103}
 
-\leavevmode\hypertarget{ref-kroell2019}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-kroell2019}{}}%
 Kroell, L. M., Schlagbauer, B., Zinchenko, A., MÃÂller, H. J., \& Geyer, T. (2019). Behavioural evidence for a single memory system in contextual cueing. \emph{Visual Cognition}, \emph{27}(5-8), 551--562. \url{https://doi.org/10.1080/13506285.2019.1648347}
 
-\leavevmode\hypertarget{ref-marek2020}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-marek2020}{}}%
 Marek, N., \& Pollmann, S. (2020). Contextual-{Cueing} beyond the {Initial Field} of {View}-{A Virtual Reality Experiment}. \emph{Brain Sciences}, \emph{10}(7). \url{https://doi.org/10.3390/brainsci10070446}
 
-\leavevmode\hypertarget{ref-mcsorley2001}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-mcsorley2001}{}}%
 McSorley, E., \& Findlay, J. M. (2001). Visual search in depth. \emph{Vision Research}, \emph{41}(25-26), 3487--3496. \url{https://doi.org/10.1016/s0042-6989(01)00197-3}
 
-\leavevmode\hypertarget{ref-nakayama1986}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-nakayama1986}{}}%
 Nakayama, K., \& Silverman, G. H. (1986). Serial and parallel processing of visual feature conjunctions. \emph{Nature}, \emph{320}(6059), 264--265. \url{https://doi.org/10.1038/320264a0}
 
-\leavevmode\hypertarget{ref-olson2002}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-olson2002}{}}%
 Olson, I. R., \& Chun, M. M. (2002). Perceptual constraints on implicit learning of spatial context. \emph{Visual Cognition}, \emph{9}(3), 273--302. \url{https://doi.org/10.1080/13506280042000162}
 
-\leavevmode\hypertarget{ref-smyth2008}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-smyth2008}{}}%
 Smyth, A. C., \& Shanks, D. R. (2008). Awareness in contextual cuing with extended and concurrent explicit tests. \emph{Memory \& Cognition}, \emph{36}(2), 403--415. \url{https://doi.org/10.3758/MC.36.2.403}
 
-\leavevmode\hypertarget{ref-vadillo2016}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-vadillo2016}{}}%
 Vadillo, M. A., Konstantinidis, E., \& Shanks, D. R. (2016). Underpowered samples, false negatives, and unconscious learning. \emph{Psychonomic Bulletin \& Review}, \emph{23}(1), 87--102. \url{https://doi.org/10.3758/s13423-015-0892-6}
 
-\leavevmode\hypertarget{ref-vadillo2021}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-vadillo2021}{}}%
 Vadillo, M. A., Malejka, S., Lee, D. Y. H., Dienes, Z., \& Shanks, D. R. (2021). Raising awareness about measurement error in research on unconscious mental processes. \emph{Psychonomic Bulletin \& Review}. \url{https://doi.org/10.3758/s13423-021-01923-y}
 
-\leavevmode\hypertarget{ref-zang2017}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-zang2017}{}}%
 Zang, X., Shi, Z., Müller, H. J., \& Conci, M. (2017). Contextual cueing in 3D visual search depends on representations in planar-, not depth-defined space. \emph{Journal of Vision}, \emph{17}(5), 17. \url{https://doi.org/10.1167/17.5.17}
 
-\leavevmode\hypertarget{ref-zheng2019}{}%
+\leavevmode\vadjust pre{\hypertarget{ref-zheng2019}{}}%
 Zheng, L., \& Pollmann, S. (2019). The contribution of spatial position and rotated global configuration to contextual cueing. \emph{Attention, Perception, \& Psychophysics}, \emph{81}(8), 2590--2596. \url{https://doi.org/10.3758/s13414-019-01871-9}
 
 \end{CSLReferences}

@@ -132,13 +132,14 @@ perc_removed <-
 # compute normalised RT (norm_RT), for calculating w/s error bars (i.e., Cosin)
 data <- 
   data %>% 
-  group_by(subj) %>% # within each experiment, and each subject
-  summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
-  mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
-  ungroup() %>% # ungroup the data, to allow for removal of variable
-  left_join(data, by = "subj") %>% # join to the original data frame
-  mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
-  select(sub_exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT)
+  # group_by(subj) %>% # within each experiment, and each subject
+  # summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
+  # mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
+  # ungroup() %>% # ungroup the data, to allow for removal of variable
+  # left_join(data, by = "subj") %>% # join to the original data frame
+  # mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
+  # select(sub_exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT)
+  select(sub_exp, subj, age:RT, everything())
   
 ```
 
@@ -262,7 +263,7 @@ RT_avgs_figure <-
   data %>% 
   group_by(sub_exp, TT, targ_depth, epoch) %>% 
   summarise(meanRT = mean(RT), 
-            SE = sd(norm_RT)/sqrt(n())) %>% 
+            SE = sd(RT)/sqrt(n())) %>% 
   ggplot(aes(x = epoch, y = meanRT, group = interaction(TT, targ_depth))) +
   geom_line() +
   geom_errorbar(aes(ymin = meanRT-SE, ymax = meanRT+SE), width = 0.1)+

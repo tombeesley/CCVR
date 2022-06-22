@@ -126,14 +126,14 @@ perc_removed <-
 # compute normalised RT (norm_RT), for calculating w/s error bars 
 data <- 
   data %>% 
-  group_by(subj) %>% # within each experiment, and each subject
-  summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
-  mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
-  ungroup() %>% # ungroup the data, to allow for removal of variable
-  left_join(data, by = "subj") %>% # join to the original data frame
-  mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
-  select(exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT) # arrange the variables
-
+  # group_by(subj) %>% # within each experiment, and each subject
+  # summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
+  # mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
+  # ungroup() %>% # ungroup the data, to allow for removal of variable
+  # left_join(data, by = "subj") %>% # join to the original data frame
+  # mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
+  # select(exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT) # arrange the variables
+  select(exp, subj, age:RT, everything()) # arrange the variables
 ```
 
 There were `r length(data_demog$subj)` participants in the sample, of which `r sum(data_demog$gender == "F")` identified as female, and `r sum(data_demog$gender == "M")` as male. `r sum(data_demog$condition == "proximal_repeated")` were assigned to the "proximal repeated" condition, while `r sum(data_demog$condition == "distal_repeated")` were assigned to the "distal repeated" condition.
@@ -232,7 +232,7 @@ data_RT_avgs_figure <-
   data %>%
   group_by(condition, TT, targ_depth, epoch) %>% 
   summarise(meanRT = mean(RT), 
-            SE = sd(norm_RT)/sqrt(n())) %>%
+            SE = sd(RT)/sqrt(n())) %>%
   mutate(condition = recode(condition, 
                             "distal_repeated" = "Distal condition",
                             "proximal_repeated" = "Proximal condition")) %>% 
@@ -291,7 +291,7 @@ test_figure <-
                              "Far" = "Far targets")) %>%
   group_by(condition, TT, targ_depth, test) %>%
   summarise(meanRT = mean(RT), 
-            SE = sd(norm_RT)/sqrt(n())) %>% 
+            SE = sd(RT)/sqrt(n())) %>% 
   ggplot(aes(x = test, y = meanRT, fill = TT)) +
   geom_col(position = position_dodge(),
            colour = "black",
@@ -424,7 +424,7 @@ data_ego_test <-
 test_ego_figure <- 
   data_ego_test %>% 
   group_by(egocentric, TT, test) %>%
-  summarise(meanRT = mean(RT), SE = sd(norm_RT)/sqrt(n())) %>% 
+  summarise(meanRT = mean(RT), SE = sd(RT)/sqrt(n())) %>% 
   ggplot(aes(x = test, y = meanRT, fill = TT)) +
   geom_col(position = position_dodge(),
            colour = "black",

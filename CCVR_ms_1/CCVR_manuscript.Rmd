@@ -28,7 +28,7 @@ abstract: |
   
   Public significance statement:  This study provides a test of the way in which visual scenes are processed and learnt about across three-dimensional space. Current models of this behaviour only consider learning in two-dimensional space. The current work therefore provides important insights into how depth information contributes to the memory representations of familiar scenes. 
 keywords          : "Visual search, contextual cuing, depth, virtual reality"
-wordcount         : "7971"
+wordcount         : "8035"
 bibliography      : ["references.bib"]
 figsintext        : yes
 floatsintext      : no
@@ -175,7 +175,7 @@ Each configuration comprised 16 cylinder-shaped distractors, which were equally 
 
 ### Procedure
 
-Participants were given 10 practice trials to familiarize themselves with the task. This provided participants with a guide as to how they should direct their head position towards the centre of the target object, prior to responding with the spacebar. Participants were told to search for a "pill-shaped target" and to press the spacebar once the central blue circle region was over the target object ^[It should be noted that the use of a single response key for target detection deviates from the majority of the work on contextual cuing that used two response keys (e.g., left/right); it is possible that this has some consequence for the operation of response related processes that contribute to the contextual cuing effect, @schankin2009b and @schankin2011]. This provided a guide to how the program would register accurate target detection. The blue circle was used for training only and not presented in the main phase of the experiment. After a successful detection of the target, the white fixation circle appeared. The program detected the gaze on this fixation circle before initiating the next trial.
+Participants were given 10 practice trials to familiarize themselves with the task. This provided participants with a guide as to how they should direct their head position towards the centre of the target object, prior to responding with the spacebar. Participants were told to search for a "pill-shaped target" and to press the spacebar once the central blue circle region was over the target object ^[It should be noted that the use of a single response key for target detection deviates from the majority of the work on contextual cuing that used two response keys (e.g., left/right); it is possible that this has some consequence for the operation of response related processes that contribute to the contextual cuing effect, [@schankin2009a; @schankin2011]]. This provided a guide to how the program would register accurate target detection. The blue circle was used for training only and not presented in the main phase of the experiment. After a successful detection of the target, the white fixation circle appeared. The program detected the gaze on this fixation circle before initiating the next trial.
 
 The main task consisted of 480 trials, divided into 30 blocks (16 trials per block). Each block contained four trials from each of four different configuration sets. Within each set, and within each block, targets were equally distributed across the four quadrants of the x/y plane. The order of trials within each block was randomised, with the constraint that the target could not occupy the same location across consecutive trials. Participants were given breaks every 160 trials (at the end of every 10 blocks) and breaks lasted until participants wished to resume.
 
@@ -198,9 +198,9 @@ Since Experiment 1B used a timeout of 10 seconds, we imposed the same cutoff for
 
 Two participants had an unusually high proportion of trials removed (greater than 2.5 SDs of the mean proportion of trials removed), and we excluded these two participants from further analysis (both from Experiment 1a). We next examined the impact of these trial exclusions on the proportion of data contributing to the analysis across trials with targets at the two different depths. We identified 6 participants (4 from Experiment 1a and 2 from Experiment 1b) that had a high discrepancy in the proportion of excluded trials across the factor of target depth (greater than 15% difference in the proportion of trials excluded) and we excluded these participants from further analysis. The final proportion of trials contributing to the analysis in Experiment 1a was 93.9% and 88.2% for near and far targets, respectively, and in Experiment 1b was 87.9% and 88.4% for near and far targets, respectively. 
 
-Within-subject error bars were computed by a process of normalising the RT data for the sample [@cousineau2005]. Figure \@ref(fig:Exp1-RT-figure) shows the RT data across the 6 epochs, plotted separately for the data from Experiment 1a and Experiment 1b.  RTs decreased with practice on the task, and were shorter for repeated configurations than for random configurations. There was also a clear target location effect, with responses being much slower when the target was located on the near surface compared to the far surface. 
+Figure \@ref(fig:Exp1-RT-figure) shows the RT data across the 6 epochs, plotted separately for the data from Experiment 1a and Experiment 1b.  RTs decreased with practice on the task, and were shorter for repeated configurations than for random configurations. There was also a clear target location effect, with responses being much slower when the target was located on the near surface compared to the far surface. 
 
-(ref:Exp1-RT-figure) RT data for Experiment 1A and 1B. Circles reflect trials with near targets (T) and squares those with far targets. White symbols are used for trials with distractors that are entirely randomised, while black symbols are those trials with repeating distractors.
+(ref:Exp1-RT-figure) RT data for Experiment 1A and 1B. Circles reflect trials with near targets (T) and squares those with far targets. White symbols are used for trials with distractors that are entirely randomised, while black symbols are those trials with repeating distractors. Error bars reflect standard error of the mean (hereafter SEM). 
 
 ```{r Exp1-RT-figure, fig.align="center", fig.cap="(ref:Exp1-RT-figure)", out.width="100%"}
 # plots the main RT figure from CCVR03
@@ -401,7 +401,7 @@ Trials were excluded on the same basis as in Experiment 1a and 1b. Mean RTs for 
 
 Figure \@ref(fig:Exp2-RT-figure) shows the RT data across the 31 epochs. RTs decrease with practice on the task, and are shorter for repeated configurations than for random configurations. Like in Experiment 1a and 1b, there is a clear target location effect, with responses being much slower when the target was located on the near surface compared to when it was on the far surface.
 
-(ref:Exp2-RT-figure) RT data for Experiment 2. Participants in the "Distal" condition received repeating configurations in which those distractors that were close to the target were randomised on each trial, while those distractors far from the target were predictive of the target location. In the "Proximal" condition this relationship was reversed: those far from the target were randomised, while those close to the target were predictive of the target location. Circles reflect trials with near targets (T) and squares those with far targets. White symbols are used for trials with distractors that are entirely randomised, while black symbols are those trials with repeating distractors. 
+(ref:Exp2-RT-figure) RT data for Experiment 2. Participants in the "Distal" condition received repeating configurations in which those distractors that were close to the target were randomised on each trial, while those distractors far from the target were predictive of the target location. In the "Proximal" condition this relationship was reversed: those far from the target were randomised, while those close to the target were predictive of the target location. Circles reflect trials with near targets (T) and squares those with far targets. White symbols are used for trials with distractors that are entirely randomised, while black symbols are those trials with repeating distractors. Error bars reflect SEM.
 
 ```{r Exp2-RT-figure, fig.align="center", fig.cap="(ref:Exp2-RT-figure)", fig.dim=c(8,8)}
 # main RT figure from CCVR04
@@ -524,7 +524,7 @@ CC_effect_end_exp2 <-
 
 Learning effects under each condition were calculated by comparing RTs for those epochs containing random configurations (9, 10, 19, 20, 29, and 30) with the adjacent epochs containing repeated configurations (8, 11, 18, 21, 28, 31). The data from these three "test periods" are plotted in Figure \@ref(fig:Exp2-test-figure). Overall there was a strong CC effect across conditions and test phases. Averaging across the test data, `r round(mean(overallCC_effect$CC_effect>0)*100,0)`% of participants showed a positive (numerical) CC effect. 
 
-(ref:Exp2-test-figure) RT data from the "test blocks" of Experiment 2. Each test compares the reaction times in blocks containing random configurations to reaction times in adjacent blocks that contained repeated configurations. 
+(ref:Exp2-test-figure) RT data from the "test blocks" of Experiment 2. Each test compares the reaction times in blocks containing random configurations to reaction times in adjacent blocks that contained repeated configurations. Error bars reflect SEM.  
 
 ```{r Exp2-test-figure, fig.align="center", fig.cap="(ref:Exp2-test-figure)", out.width="100%"}
 # test data figure from CCVR04
@@ -541,21 +541,11 @@ We next explored the possible interaction effects involving *target-distractor c
 
 An additional Bayesian ANOVA (priors were set at the default "medium" width) was run with factors of *configuration type*, *target-depth*, and *test* to explore the three-way interaction that was significant in the ANOVA reported earlier. This revealed a Bayes Factor for the interaction that did not amount to supporting evidence, BF = `r  spec_dec(extractBF(exp_2_anova_BF_b[18])$bf/extractBF(exp_2_anova_BF_b[17])$bf,1)`. 
 
-
-<!-- #(ref:Exp2-CC-figure) CC effect across tests in Experiment 2, as a function of target-depth. -->
-
-```{r Exp2-CC-figure, fig.align="center", fig.cap="(ref:Exp2-CC-figure)", out.width="100%"}
-
-# figure showing the CC effect across tests, by target-depth
-#CCVR04_RT_test_diff_figure
-
-```
-
 ### Analysing the egocentricity of learning
 
 So far our analysis has focused on the *allocentric* nature of the contingencies: whether the position of the repeating distractors in respect of the target-depth affects the CC that develops. However, our manipulation of the distractor contingencies, with only one surface containing repeated distractors (and the other random distractors) means that we can also assess the CC effect with respect to the position of the observer. To do this, we recoded the factors of distractor-target contingency and target depth as a single factor of egocentricity: egocentric-near (proximal contingencies with near targets; distal contingencies with far targets) or egocentric-far (proximal contingencies with far targets; distal contingencies with near targets). These data are presented in Figure \@ref(fig:Exp2-ego-figure). 
 
-(ref:Exp2-ego-figure) RTs across the tests in Experiment 2, as a function of egocentricity of the repeated configurations (near to the observer or far from the observer).
+(ref:Exp2-ego-figure) RTs across the tests in Experiment 2, as a function of egocentricity of the repeated configurations (near to the observer or far from the observer). Error bars reflect SEM.
 
 ```{r Exp2-ego-figure, fig.align="center", fig.cap="(ref:Exp2-ego-figure)", out.width="100%"}
 

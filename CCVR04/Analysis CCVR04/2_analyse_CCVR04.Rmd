@@ -123,16 +123,9 @@ perc_removed <-
   group_by(subj) %>% 
   summarise(perc = (1 - (n()/496))*100)
 
-# compute normalised RT (norm_RT), for calculating w/s error bars 
+# reorder columns
 data <- 
   data %>% 
-  # group_by(subj) %>% # within each experiment, and each subject
-  # summarise(sub_MeanRT = mean(RT)) %>% # calculate the mean RT for the subject
-  # mutate(sample_MeanRT = mean(sub_MeanRT)) %>% # the overall mean RT for the sample in that experiment
-  # ungroup() %>% # ungroup the data, to allow for removal of variable
-  # left_join(data, by = "subj") %>% # join to the original data frame
-  # mutate(norm_RT = RT - sub_MeanRT + sample_MeanRT) %>% # compute the normalised RT, from the RT, subject mean and sample mean
-  # select(exp, subj, age:RT, norm_RT, everything(), -sub_MeanRT, -sample_MeanRT) # arrange the variables
   select(exp, subj, age:RT, everything()) # arrange the variables
 ```
 
@@ -142,7 +135,7 @@ Summary statistics for RTs and number of responses made:
 
 `r table_basic_resp_stats`
 
-Data processing: trials which led to timeouts, and trials that had more than one additional responses (i.e., up to 2 responses allowed) were removed. Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average this resulted in the loss of `r round(mean(perc_removed$perc),1)`% of trials. Normalised RT was computed in order to create within-subject error bars in all plots. 
+Data processing: trials which led to timeouts, and trials that had more than one additional responses (i.e., up to 2 responses allowed) were removed. Following this, RTs greater or less than 2.5 SDs from the participant mean RT were removed. On average this resulted in the loss of `r round(mean(perc_removed$perc),1)`% of trials.
 
 ```{r}
 # summarise the overall mean RT for each P 

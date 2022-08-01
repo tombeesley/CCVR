@@ -204,7 +204,8 @@ Figure \@ref(fig:Exp1-RT-figure) shows the RT data across the 6 epochs, plotted 
 
 ```{r Exp1-RT-figure, fig.align="center", fig.cap="(ref:Exp1-RT-figure)", out.width="100%"}
 # plots the main RT figure from CCVR03
-CCVR03_RT_avgs_figure +
+fig1 <- 
+  CCVR03_RT_avgs_figure +
   labs(y = "Mean response time (ms)",
        x = "Epoch (80 trials)") +
   theme(text=element_text(size = 12, family="sans"),
@@ -215,8 +216,16 @@ CCVR03_RT_avgs_figure +
                                     face = "bold",
                                     margin = margin(r = 15)),
         legend.text = element_text(size = 12),
-        legend.key.size = unit(1,"cm")) +
+        legend.key.size = unit(1,"cm"),
+        panel.border = element_rect(fill = NA, colour = "black")) +
   facet_wrap(vars(sub_exp))
+
+# write figure to file
+ggsave("Files for publisher/fig1.tif", plot = fig1, device = "tiff",
+       units = "cm", width = 20, height = 20)
+
+# show figure in manuscript
+fig1
 
 ```
 
@@ -405,7 +414,8 @@ Figure \@ref(fig:Exp2-RT-figure) shows the RT data across the 31 epochs. RTs dec
 
 ```{r Exp2-RT-figure, fig.align="center", fig.cap="(ref:Exp2-RT-figure)", fig.dim=c(8,8)}
 # main RT figure from CCVR04
-CCVR04_RT_avgs_figure +
+fig2 <- 
+  CCVR04_RT_avgs_figure +
   theme(text=element_text(size = 12, family="sans"),
         axis.title.x = element_text(size = 14, 
                                     face = "bold",
@@ -416,7 +426,13 @@ CCVR04_RT_avgs_figure +
         legend.text = element_text(size = 12),
         legend.key.size = unit(1,"cm"),
         legend.position = "right")
-  
+
+# write figure to file
+ggsave("Files for publisher/fig2.tif", plot = fig2, device = "tiff",
+       units = "cm", width = 20, height = 20)
+
+# show figure in manuscript
+fig2
 
 ```
 
@@ -529,6 +545,13 @@ Learning effects under each condition were calculated by comparing RTs for those
 ```{r Exp2-test-figure, fig.align="center", fig.cap="(ref:Exp2-test-figure)", out.width="100%"}
 # test data figure from CCVR04
 CCVR04_test_figure
+
+fig3 <- CCVR04_test_figure
+
+ggsave("Files for publisher/fig3.tif", plot = fig3, device = "tiff",
+       units = "cm", width = 20, height = 20)
+
+
 ```
 
 The data were subjected to a four-way mixed-model ANOVA with a between-subject factor of *target-distractor contingency* (proximal vs. distal), and within-subject factors of *configuration type* (repeated vs. random), *target-depth* (near vs. far) and *test* (test 1, 2, or 3). Where Mauchly's test of sphericity revealed violations, Greenhouse-Geisser corrections were made. There was a main effect of *configuration type*, `r apa(exp2_anova, effect = "TT")`, with response times for repeated configurations (`r sme_TT[sme_TT$TT=="Repeated","RT"]` ms, SD = `r sme_TT[sme_TT$TT=="Repeated","SD"]`) faster than those for random configurations (`r sme_TT[sme_TT$TT=="Random","RT"]` ms, SD = `r sme_TT[sme_TT$TT=="Random","SD"]`). There was also a main effect of *target-depth*, `r apa(exp2_anova, effect = "targ_depth")`, with response times for far targets (`r sme_targ_depth[sme_targ_depth$targ_depth=="Far","RT"]` ms, SD = `r sme_targ_depth[sme_targ_depth$targ_depth=="Far","SD"]`) faster than those for near targets (`r sme_targ_depth[sme_targ_depth$targ_depth=="Near","RT"]` ms, SD = `r sme_targ_depth[sme_targ_depth$targ_depth=="Near","SD"]`). The main effect of *test* was also significant, `r apa(exp2_anova, effect = "test", force_sph_corr = TRUE)` with response times decreasing across the three tests (Test 1: `r sme_test[sme_test$test=="1","RT"]` ms, SD = `r sme_test[sme_test$test=="1","SD"]`; Test 2: `r sme_test[sme_test$test=="2","RT"]` ms, SD = `r sme_test[sme_test$test=="2","SD"]`; Test 3: `r sme_test[sme_test$test=="3","RT"]` ms, SD = `r sme_test[sme_test$test=="3","SD"]`). The main effect of *target-distractor contingency* was not significant, `r apa(exp2_anova, effect = "condition")`.
@@ -551,6 +574,11 @@ So far our analysis has focused on the *allocentric* nature of the contingencies
 
 # figure showing RT as a function of egocentricity
 CCVR04_test_ego_figure
+
+fig4 <- CCVR04_test_ego_figure
+
+ggsave("Files for publisher/fig4.tif", plot = fig4, device = "tiff",
+       units = "cm", width = 20, height = 20)
 
 ```
 
